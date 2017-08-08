@@ -21,10 +21,14 @@ namespace Swift {
 
 IncomingFileTransferManager::IncomingFileTransferManager(
         JingleSessionManager* jingleSessionManager,
+        ///heroyin
+        IQRouter* router,
         FileTransferTransporterFactory* transporterFactory,
         TimerFactory* timerFactory,
         CryptoProvider* crypto) :
             jingleSessionManager(jingleSessionManager),
+            ///heroyin
+            router(router), 
             transporterFactory(transporterFactory),
             timerFactory(timerFactory),
             crypto(crypto) {

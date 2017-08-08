@@ -32,6 +32,11 @@ namespace Swift {
                     FileTransferTransporterFactory*);
             virtual ~JingleFileTransfer();
 
+			///heroyin
+			inline std::shared_ptr<JingleSession> getSession() {
+				return session;
+			};
+
         protected:
             virtual void handleTransportInfoReceived(const JingleContentID&, JingleTransportPayload::ref);
             virtual void handleLocalTransportCandidatesGenerated(

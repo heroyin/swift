@@ -11,6 +11,7 @@
 
 #include <Swiften/Jingle/JingleSession.h>
 #include <Swiften/Queries/GenericRequest.h>
+#include <Swiften/Elements/ErrorPayload.h>
 
 namespace Swift {
     class IQRouter;
@@ -21,6 +22,8 @@ namespace Swift {
             typedef std::shared_ptr<JingleSessionImpl> ref;
 
             JingleSessionImpl(const JID& initiator, const JID&, const std::string& id, IQRouter* router);
+			///heroyin
+			~JingleSessionImpl();
 
             virtual void sendInitiate(const JingleContentID&, JingleDescription::ref, JingleTransportPayload::ref);
             virtual void sendTerminate(JinglePayload::Reason::Type reason);
@@ -38,7 +41,9 @@ namespace Swift {
 
             std::string sendSetRequest(JinglePayload::ref payload);
             JinglePayload::ref createPayload() const;
-            void handleRequestResponse(RequestRef);
+			///heroyin
+            void handleRequestResponse(RequestRef, ErrorPayload::ref error);
+///            void handleRequestResponse(RequestRef);
 
         private:
             IQRouter *iqRouter;

@@ -38,6 +38,8 @@ PubSubSerializer::PubSubSerializer(PayloadSerializerCollection* serializers) : s
     pubsubSerializers.push_back(std::make_shared<PubSubSubscribeSerializer>(serializers));
     pubsubSerializers.push_back(std::make_shared<PubSubUnsubscribeSerializer>(serializers));
     pubsubSerializers.push_back(std::make_shared<PubSubSubscriptionSerializer>(serializers));
+///hero add publish options
+	pubsubSerializers.push_back(std::make_shared<PubSubPublishOptionsSerializer>(serializers));
 }
 
 PubSubSerializer::~PubSubSerializer() {
@@ -56,8 +58,15 @@ std::string PubSubSerializer::serializePayload(std::shared_ptr<PubSub> payload) 
                 element.addNode(std::make_shared<XMLRawTextNode>(std::make_shared<PubSubConfigureSerializer>(serializers)->serialize(create->getConfigure())));
             }
             if (std::shared_ptr<PubSubSubscribe> subscribe = std::dynamic_pointer_cast<PubSubSubscribe>(p)) {
-                element.addNode(std::make_shared<XMLRawTextNode>(std::make_shared<PubSubConfigureSerializer>(serializers)->serialize(subscribe->getOptions())));
+  ///hero fix error
+				//				element.addNode(std::make_shared<XMLRawTextNode>(boost::make_shared<PubSubConfigureSerializer>(serializers)->serialize(subscribe->getOptions())));
+				element.addNode(std::make_shared<XMLRawTextNode>(std::make_shared<PubSubOptionsSerializer>(serializers)->serialize(subscribe->getOptions())));
+
             }
+///hero add publish options
+			if (std::shared_ptr<PubSubPublish> publish = std::dynamic_pointer_cast<PubSubPublish>(p)) {
+				element.addNode(std::make_shared<XMLRawTextNode>(std::make_shared<PubSubPublishOptionsSerializer>(serializers)->serialize(publish->getOptions())));
+			}
         }
     }
     return element.serialize();

@@ -28,6 +28,8 @@ namespace Swift {
                 ResourceBindError,
                 SessionStartError,
                 StreamError,
+///hero 2015-3-2
+				StreamErrorConflict,
                 TLSError,
                 ClientCertificateLoadError,
                 ClientCertificateError,

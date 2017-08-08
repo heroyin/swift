@@ -31,7 +31,9 @@
 
 namespace Swift {
 
-CoreClient::CoreClient(const JID& jid, const SafeByteArray& password, NetworkFactories* networkFactories) : jid_(jid), password_(password), networkFactories(networkFactories), disconnectRequested_(false), certificateTrustChecker(nullptr) {
+CoreClient::CoreClient(const JID& jid, const SafeByteArray& password, NetworkFactories* networkFactories) : jid_(jid), password_(password), networkFactories(networkFactories), disconnectRequested_(false), certificateTrustChecker(nullptr)
+///hero
+,rtpSecretKey("RTP-SECRET-SEED")  {
     stanzaChannel_ = new ClientSessionStanzaChannel();
     stanzaChannel_->onMessageReceived.connect(boost::bind(&CoreClient::handleMessageReceived, this, _1));
     stanzaChannel_->onPresenceReceived.connect(boost::bind(&CoreClient::handlePresenceReceived, this, _1));
@@ -39,6 +41,7 @@ CoreClient::CoreClient(const JID& jid, const SafeByteArray& password, NetworkFac
     stanzaChannel_->onAvailableChanged.connect(boost::bind(&CoreClient::handleStanzaChannelAvailableChanged, this, _1));
 
     iqRouter_ = new IQRouter(stanzaChannel_);
+
     iqRouter_->setJID(jid);
 }
 
@@ -161,6 +164,9 @@ void CoreClient::bindSessionToStream() {
     session_->setSingleSignOn(options.singleSignOn);
     session_->setAuthenticationPort(options.manualPort);
     session_->setSessionShutdownTimeout(options.sessionShutdownTimeoutInMilliseconds);
+///hero
+	session_->setRtpSecretKey(rtpSecretKey);
+
     switch(options.useTLS) {
         case ClientOptions::UseTLSWhenAvailable:
             session_->setUseTLS(ClientSession::UseTLSWhenAvailable);
@@ -205,6 +211,9 @@ void CoreClient::handleConnectorFinished(std::shared_ptr<Connection> connection,
         }
 
         connection_ = connection;
+
+        ///hero
+        onSocketConnected();
 
         sessionStream_ = std::make_shared<BasicSessionStream>(ClientStreamType, connection_, getPayloadParserFactories(), getPayloadSerializers(), networkFactories->getTLSContextFactory(), networkFactories->getTimerFactory(), networkFactories->getXMLParserFactory(), options.tlsOptions);
         if (certificate_) {
@@ -277,6 +286,10 @@ void CoreClient::handleSessionFinished(std::shared_ptr<Error> error) {
                 case ClientSession::Error::StreamEndError:
                     clientError = ClientError(ClientError::StreamError);
                     break;
+///hero 2015-3-2
+				case ClientSession::Error::StreamErrorConflict:
+					clientError = ClientError(ClientError::StreamErrorConflict);
+					break;
             }
             clientError.setErrorCode(actualError->errorCode);
         }
@@ -483,5 +496,16 @@ void CoreClient::forceReset() {
         resetSession();
     }
 }
+
+///hero
+std::string CoreClient::getRtpSecretKey() {
+	return rtpSecretKey;
+}
+
+///hero
+void CoreClient::setRtpSecretKey(std::string key) {
+	this->rtpSecretKey = key;
+}
+
 
 }

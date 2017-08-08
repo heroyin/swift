@@ -28,6 +28,12 @@ JingleSessionImpl::ref JingleSessionManager::getSession(const JID& jid, const st
     return i != sessions.end() ? i->second : JingleSessionImpl::ref();
 }
 
+///heroyin
+void JingleSessionManager::removeSession(const JID &jid, const std::string id)
+{
+	SWIFT_LOG(debug) << "JingleSessionManager::removeSession" << jid << id;
+	sessions.erase(JIDSession(jid, id));
+}
 void JingleSessionManager::addIncomingSessionHandler(IncomingJingleSessionHandler* handler) {
     incomingSessionHandlers.push_back(handler);
 }

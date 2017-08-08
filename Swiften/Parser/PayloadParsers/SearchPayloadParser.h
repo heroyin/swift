@@ -15,6 +15,8 @@
 namespace Swift {
     class FormParserFactory;
     class FormParser;
+	///hero
+	class ResultSetParser;
 
     class SWIFTEN_API SearchPayloadParser : public GenericPayloadParser<SearchPayload> {
         public:
@@ -36,5 +38,8 @@ namespace Swift {
             FormParser* formParser;
             std::string currentText;
             boost::optional<SearchPayload::Item> currentItem;
+			///hero
+			ResultSetParser *resultSetParser;
+
     };
 }

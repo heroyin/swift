@@ -17,6 +17,12 @@ namespace Swift {
     class SWIFTEN_API WriteBytestream {
         public:
             typedef std::shared_ptr<WriteBytestream> ref;
+///hero 
+			enum SeekType{
+				beg,
+				cur,
+				end
+			};
 
             virtual ~WriteBytestream();
 
@@ -27,6 +33,9 @@ namespace Swift {
              */
             virtual bool write(const std::vector<unsigned char>&) = 0;
             virtual void close() {}
+
+///hero
+			virtual void seek(const boost::uintmax_t offset, WriteBytestream::SeekType seekType) = 0;
 
             boost::signals2::signal<void (const std::vector<unsigned char>&)> onWrite;
     };

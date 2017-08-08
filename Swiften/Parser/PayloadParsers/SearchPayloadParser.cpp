@@ -12,10 +12,11 @@
 
 #include <Swiften/Parser/PayloadParsers/FormParser.h>
 #include <Swiften/Parser/PayloadParsers/FormParserFactory.h>
+#include <Swiften/Parser/PayloadParsers/ResultSetParser.h>
 
 namespace Swift {
 
-SearchPayloadParser::SearchPayloadParser() : level(TopLevel), formParser(nullptr)  {
+SearchPayloadParser::SearchPayloadParser() : level(TopLevel), formParser(nullptr), resultSetParser(nullptr)  {
     formParserFactory = new FormParserFactory();
 }
 
@@ -31,6 +32,10 @@ void SearchPayloadParser::handleStartElement(const std::string& element, const s
             assert(!formParser);
             formParser = boost::polymorphic_downcast<FormParser*>(formParserFactory->createPayloadParser());
         }
+        else if (element == "set") {
+			assert(!resultSetParser);
+			resultSetParser = new ResultSetParser();
+		}
         else if (element == "item") {
             assert(!currentItem);
             currentItem.reset(SearchPayload::Item());
@@ -48,6 +53,10 @@ void SearchPayloadParser::handleStartElement(const std::string& element, const s
         formParser->handleStartElement(element, ns, attributes);
     }
 
+///hero
+	if (resultSetParser) {
+		resultSetParser->handleStartElement(element, ns, attributes);
+	}
     ++level;
 }
 
@@ -65,6 +74,12 @@ void SearchPayloadParser::handleEndElement(const std::string& element, const std
             getPayloadInternal()->setForm(formParser->getPayloadInternal());
             delete formParser;
             formParser = nullptr;
+}
+		///hero
+		else if (resultSetParser) {
+			getPayloadInternal()->setResultSet(resultSetParser->getPayloadInternal());
+			delete resultSetParser;
+			resultSetParser = nullptr;
         }
         else if (element == "item") {
             assert(currentItem);
@@ -107,6 +122,10 @@ void SearchPayloadParser::handleCharacterData(const std::string& data) {
     if (formParser) {
         formParser->handleCharacterData(data);
     }
+///hero
+	else if(resultSetParser) {
+		resultSetParser->handleCharacterData(data);
+	}
     else {
         currentText += data;
     }

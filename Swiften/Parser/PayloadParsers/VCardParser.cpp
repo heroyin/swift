@@ -82,6 +82,14 @@ void VCardParser::handleEndElement(const std::string& element, const std::string
     else if (elementHierarchy == "/vCard/PHOTO/TYPE") {
         getPayloadInternal()->setPhotoType(currentText_);
     }
+/// hero lx
+	else if (elementHierarchy == "/vCard/PHOTO/HASH") {
+		getPayloadInternal()->setPhotoHash(currentText_);
+	}
+	else if (elementHierarchy == "/vCard/ORGGROUP")
+	{
+		getPayloadInternal()->setOrgGroup(currentText_);
+	}
     else if (elementHierarchy == "/vCard/PHOTO/BINVAL") {
         currentText_.erase(std::remove(currentText_.begin(), currentText_.end(), '\n'), currentText_.end());
         currentText_.erase(std::remove(currentText_.begin(), currentText_.end(), '\r'), currentText_.end());
@@ -111,7 +119,9 @@ void VCardParser::handleEndElement(const std::string& element, const std::string
         getPayloadInternal()->addEMailAddress(currentEMailAddress_);
     }
     else if (elementHierarchy == "/vCard/BDAY" && !currentText_.empty()) {
-        getPayloadInternal()->setBirthday(stringToDateTime(currentText_));
+		///hero
+		getPayloadInternal()->setBirthday(currentText_);
+//		getPayloadInternal()->setBirthday(stringToDateTime(currentText_));
     }
     else if (elementHierarchy == "/vCard/TEL/NUMBER") {
         currentTelephone_.number = currentText_;
@@ -261,6 +271,18 @@ void VCardParser::handleEndElement(const std::string& element, const std::string
     else if (elementHierarchy == "/vCard/URL" && !currentText_.empty()) {
         getPayloadInternal()->addURL(currentText_);
     }
+///hero
+	else if (elementHierarchy == "/vCard/MOBILE" && !currentText_.empty()) {
+		getPayloadInternal()->setMobile(currentText_);
+	}
+	///hero
+	else if (elementHierarchy == "/vCard/SIP" && !currentText_.empty()) {
+		getPayloadInternal()->setSip(currentText_);
+	}
+	///hero
+	else if (elementHierarchy == "/vCard/SEX" && !currentText_.empty()) {
+		getPayloadInternal()->setSex(currentText_);
+	}
     else if (elementStack_.size() == 2 && unknownContentParser_) {
         getPayloadInternal()->addUnknownContent(unknownContentParser_->getResult());
     }

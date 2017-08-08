@@ -12,6 +12,9 @@
 #include <Swiften/Serializer/XML/XMLElement.h>
 #include <Swiften/Serializer/XML/XMLRawTextNode.h>
 
+///hero
+#include <Swiften/Serializer/PayloadSerializers/ResultSetSerializer.h>
+
 namespace Swift {
 
 SearchPayloadSerializer::SearchPayloadSerializer() {
@@ -54,6 +57,12 @@ std::string SearchPayloadSerializer::serializePayload(std::shared_ptr<SearchPayl
     if (Form::ref form = searchPayload->getForm()) {
         searchElement.addNode(std::make_shared<XMLRawTextNode>(FormSerializer().serialize(form)));
     }
+
+	///hero
+	if (std::shared_ptr<ResultSet> resultSet = searchPayload->getResultSet()) {
+		searchElement.addNode(std::make_shared<XMLRawTextNode>(ResultSetSerializer().serialize(resultSet)));
+	}
+
 
     return searchElement.serialize();
 }

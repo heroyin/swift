@@ -13,6 +13,8 @@
 #include <Swiften/Base/API.h>
 #include <Swiften/FileTransfer/IncomingFileTransfer.h>
 #include <Swiften/Jingle/IncomingJingleSessionHandler.h>
+///heroyin
+#include <Swiften/Queries/IQRouter.h>
 
 namespace Swift {
     class JingleSessionManager;
@@ -24,6 +26,8 @@ namespace Swift {
         public:
             IncomingFileTransferManager(
                     JingleSessionManager* jingleSessionManager,
+                    ///heroyin
+                    IQRouter* router, 
                     FileTransferTransporterFactory* transporterFactory,
                     TimerFactory* timerFactory,
                     CryptoProvider* crypto);
@@ -39,6 +43,8 @@ namespace Swift {
 
         private:
             JingleSessionManager* jingleSessionManager;
+            ///heroyin
+            IQRouter* router;
             FileTransferTransporterFactory* transporterFactory;
             TimerFactory* timerFactory;
             CryptoProvider* crypto;

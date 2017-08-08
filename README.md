@@ -1,3 +1,12 @@
+# 修改日志
+
+* 加入了EasyLogging++，修改了Log.h
+* 去掉了GSSAPI的支持，因为总是编译失败
+* 删除示例，仅保留ConnectTest，节省编译时间
+* 去除了windows下对openssl的依赖，RtpClientAuth 需要重写
+
+
+
 # Swift - An elegant, secure, adaptable and intuitive XMPP Client
 
 __NOTE: Please download any releases from https://swift.im/releases.html, or as a Git checkout. The tarballs provided by GitHub will not build correctly.__

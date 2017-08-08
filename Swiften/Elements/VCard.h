@@ -134,6 +134,9 @@ namespace Swift {
             void setPhotoType(const std::string& photoType) { photoType_ = photoType; }
             const std::string& getPhotoType() const { return photoType_; }
 
+///heroyin lx
+			void setPhotoHash(const std::string &hash) { photoHash_ = hash;  }
+			const std::string &getPhotoHash() const { return photoHash_; }
             const std::string& getUnknownContent() const { return unknownContent_; }
             void addUnknownContent(const std::string& c) {
                 unknownContent_ += c;
@@ -153,13 +156,23 @@ namespace Swift {
 
             EMailAddress getPreferredEMailAddress() const;
 
-            void setBirthday(const boost::posix_time::ptime& birthday) {
-                birthday_ = birthday;
-            }
+/*
+			void setBirthday(const boost::posix_time::ptime& birthday) {
+			birthday_ = birthday;
+			}
 
-            const boost::posix_time::ptime& getBirthday() const {
-                return birthday_;
-            }
+			const boost::posix_time::ptime& getBirthday() const {
+			return birthday_;
+			}
+			*/
+			///hero
+			void setBirthday(const std::string& birthday) {
+				birthday_ = birthday;
+			}
+
+			const std::string& getBirthday() const {
+				return birthday_;
+			}
 
             const std::vector<Telephone>& getTelephones() const {
                 return telephones_;
@@ -228,7 +241,17 @@ namespace Swift {
             void clearOrganizations() {
                 organizations_.clear();
             }
+///heroyin
 
+void setOrgGroup(const std::string group)
+			{
+				orgGroup_ = group;
+			}
+
+			std::string getOrgGroup()
+			{
+				return orgGroup_;
+			}
             const std::vector<std::string>& getTitles() const {
                 return titles_;
             }
@@ -268,13 +291,23 @@ namespace Swift {
             bool isEmpty() const {
                 bool empty = version_.empty() && fullName_.empty() && familyName_.empty() && givenName_.empty() && middleName_.empty() && prefix_.empty() && suffix_.empty();
                 empty &= photo_.empty() && photoType_.empty() && nick_.empty();
-                empty &= birthday_.is_not_a_date_time();
+///hero
+				empty &= birthday_.empty();
+				empty &= orgGroup_.empty(); 
+///				empty &= birthday_.is_not_a_date_time();
                 empty &= unknownContent_.empty();
                 empty &= emailAddresses_.empty() && telephones_.empty() && addresses_.empty() && addressLabels_.empty() && jids_.empty();
                 empty &= description_.empty() && organizations_.empty() && titles_.empty() && roles_.empty() && urls_.empty();
                 return empty;
             }
 
+///hero
+			void setMobile(const std::string& mobile) { mobile_ = mobile; }
+			const std::string& getMobile() const { return mobile_; }
+			void setSip(const std::string& sip) { sip_ = sip; }
+			const std::string& getSip() const { return sip_; }
+			void setSex(const std::string& sex) { sex_ = sex; }
+			const std::string& getSex() const { return sex_; }
         private:
             std::string version_;
             std::string fullName_;
@@ -287,7 +320,12 @@ namespace Swift {
             ByteArray photo_;
             std::string photoType_;
             std::string nick_;
-            boost::posix_time::ptime birthday_;
+///heroyin lx 
+			std::string photoHash_;
+
+			///hero
+			std::string birthday_;
+//			boost::posix_time::ptime birthday_;
             std::string unknownContent_;
             std::vector<EMailAddress> emailAddresses_;
             std::vector<Telephone> telephones_;
@@ -296,8 +334,15 @@ namespace Swift {
             std::vector<JID> jids_;
             std::string description_;
             std::vector<Organization> organizations_;
+//hero %lx
+			std::string orgGroup_;
             std::vector<std::string> titles_;
             std::vector<std::string> roles_;
             std::vector<std::string> urls_;
+
+///hero
+			std::string mobile_;
+			std::string sip_;
+			std::string sex_;
     };
 }

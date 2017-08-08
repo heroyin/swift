@@ -53,6 +53,18 @@ namespace Swift {
             virtual void accept(std::shared_ptr<WriteBytestream>, const FileTransferOptions& = FileTransferOptions()) override;
             virtual void cancel() override;
 
+//heroyin  %lx，公开hashCalculator以获取已传输部分的哈希。
+	    IncrementalBytestreamHashCalculator *getHashCalculator() {
+		return hashCalculator;
+       	    }
+
+///heroyin
+             std::shared_ptr<JingleFileTransferDescription> getDescription() {
+                  return description;
+             }
+             ///heroyin
+             void feedMissingData(const std::vector<unsigned char> &);
+
         private:
             enum State {
                 Initial,
@@ -89,6 +101,7 @@ namespace Swift {
         private:
             virtual void startTransferViaRemoteCandidate() override;
             virtual void startTransferViaLocalCandidate() override;
+            
             void checkHashAndTerminate();
             void stopAll();
             void setState(State state);

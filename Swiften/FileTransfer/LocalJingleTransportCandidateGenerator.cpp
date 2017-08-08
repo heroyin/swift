@@ -64,7 +64,7 @@ void LocalJingleTransportCandidateGenerator::start() {
 
     if (options_.isProxiedAllowed()) {
         s5bProxy->onDiscoveredProxiesChanged.connect(boost::bind(&LocalJingleTransportCandidateGenerator::handleDiscoveredProxiesChanged, this));
-        if (s5bProxy->getOrDiscoverS5BProxies().is_initialized()) {
+        if (s5bProxy->getOrDiscoverS5BProxies(JID(ownJID.getDomain())).is_initialized()) {
             handleDiscoveredProxiesChanged();
         }
     }
@@ -168,8 +168,8 @@ void LocalJingleTransportCandidateGenerator::emitOnLocalTransportCandidatesGener
         }
     }
 
-    if (options_.isProxiedAllowed() && s5bProxy && s5bProxy->getOrDiscoverS5BProxies().is_initialized()) {
-        for (auto&& proxy : s5bProxy->getOrDiscoverS5BProxies().get()) {
+    if (options_.isProxiedAllowed() && s5bProxy && s5bProxy->getOrDiscoverS5BProxies(JID(ownJID.getDomain())).is_initialized()) {
+        for (auto&& proxy : s5bProxy->getOrDiscoverS5BProxies(JID(ownJID.getDomain())).get()) {
             if (proxy->getStreamHost()) { // FIXME: Added this test, because there were cases where this wasn't initialized. Investigate this. (Remko)
                 JingleS5BTransportPayload::Candidate candidate;
                 candidate.type = JingleS5BTransportPayload::Candidate::ProxyType;
@@ -178,7 +178,9 @@ void LocalJingleTransportCandidateGenerator::emitOnLocalTransportCandidatesGener
                 if (address) {
                     candidate.hostPort = HostAddressPort(address.get(), (*proxy->getStreamHost()).port);
                     candidate.priority = 65536 * 10 + LOCAL_PREFERENCE;
-                    candidate.cid = idGenerator->generateID();
+                   // candidate.cid = idGenerator->generateID();
+///heroyin
+				candidate.cid = candidate.jid.toString() + "_" + idGenerator->generateID();
                     candidates.push_back(candidate);
                 }
             }

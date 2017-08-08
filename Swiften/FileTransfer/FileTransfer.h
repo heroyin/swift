@@ -71,6 +71,11 @@ namespace Swift {
                 return description_;
             }
 
+            ///heroyin
+	    const std::string& getMideaType() const {
+		return mideaType;
+	    }  
+
         public:
             boost::signals2::signal<void (size_t /* proccessedBytes */)> onProcessedBytes;
             boost::signals2::signal<void (const State&)> onStateChanged;
@@ -85,5 +90,7 @@ namespace Swift {
             std::string filename_;
             std::string description_;
             State state_;
+            ///heroyin
+            std::string mideaType;
     };
 }

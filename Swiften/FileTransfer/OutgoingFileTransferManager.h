@@ -13,6 +13,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include <Swiften/Base/API.h>
 
@@ -46,6 +47,14 @@ namespace Swift {
                     const JingleFileTransferFileInfo&,
                     const FileTransferOptions&);
 
+///heroyin
+std::shared_ptr<OutgoingFileTransfer> createOutgoingFileTransfer(
+				const JID& from,
+				const JID& to,
+				std::shared_ptr<ReadBytestream>,
+				const JingleFileTransferFileInfo&, 
+				const std::string &, 
+				const FileTransferOptions&);
         private:
             JingleSessionManager* jingleSessionManager;
             IQRouter* iqRouter;

@@ -27,7 +27,15 @@
 
 namespace Swift {
 
-SOCKS5BytestreamProxiesManager::SOCKS5BytestreamProxiesManager(ConnectionFactory *connFactory, TimerFactory *timeFactory, DomainNameResolver* resolver, IQRouter* iqRouter, const JID& serviceRoot) : connectionFactory_(connFactory), timerFactory_(timeFactory), resolver_(resolver), iqRouter_(iqRouter), serviceRoot_(serviceRoot) {
+///heroyin
+SOCKS5BytestreamProxiesManager::SOCKS5BytestreamProxiesManager(ConnectionFactory *connFactory, TimerFactory *timeFactory, DomainNameResolver* resolver, IQRouter* iqRouter, const JID& serviceRoot) 
+	: connectionFactory_(connFactory), 
+	timerFactory_(timeFactory), 
+	resolver_(resolver), 
+	iqRouter_(iqRouter), 
+	///serviceRoot_(serviceRoot) ,
+	proxyFinder_(std::shared_ptr<SOCKS5BytestreamProxyFinder>())
+{
 
 }
 
@@ -54,9 +62,9 @@ void SOCKS5BytestreamProxiesManager::addS5BProxy(S5BProxyRequest::ref proxy) {
     }
 }
 
-const boost::optional<std::vector<S5BProxyRequest::ref> >& SOCKS5BytestreamProxiesManager::getOrDiscoverS5BProxies() {
+const boost::optional<std::vector<S5BProxyRequest::ref> >& SOCKS5BytestreamProxiesManager::getOrDiscoverS5BProxies(const JID& serviceRoot) {
     if (!localS5BProxies_ && !proxyFinder_) {
-        queryForProxies();
+        queryForProxies(serviceRoot);
     }
     return localS5BProxies_;
 }
@@ -160,8 +168,9 @@ void SOCKS5BytestreamProxiesManager::handleNameLookupResult(const std::vector<Ho
     }
 }
 
-void SOCKS5BytestreamProxiesManager::queryForProxies() {
-    proxyFinder_ = std::make_shared<SOCKS5BytestreamProxyFinder>(serviceRoot_, iqRouter_);
+///heroyin
+void SOCKS5BytestreamProxiesManager::queryForProxies(const JID& serviceRoot) {
+    proxyFinder_ = std::make_shared<SOCKS5BytestreamProxyFinder>(serviceRoot, iqRouter_);
 
     proxyFinder_->onProxiesFound.connect(boost::bind(&SOCKS5BytestreamProxiesManager::handleProxiesFound, this, _1));
     proxyFinder_->start();
@@ -202,6 +211,21 @@ void SOCKS5BytestreamProxiesManager::handleProxySessionFinished(const std::strin
             }
         }
     }
+}
+
+void SOCKS5BytestreamProxiesManager::closeSession(std::string sessionID)
+{
+	// checking parameters
+	if (proxySessions_.find(sessionID) == proxySessions_.end()) {
+		return;
+	}
+
+	// close all sessions
+	for(auto& myPair: proxySessions_[sessionID]) {
+		myPair.second->stop();
+	}
+
+	proxySessions_.erase(sessionID);
 }
 
 }

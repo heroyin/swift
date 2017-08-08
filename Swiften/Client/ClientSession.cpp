@@ -54,8 +54,12 @@
 
 #ifdef SWIFTEN_PLATFORM_WIN32
 #include <Swiften/Base/WindowsRegistry.h>
-#include <Swiften/SASL/WindowsGSSAPIClientAuthenticator.h>
+///heroyin 
+//#include <Swiften/SASL/WindowsGSSAPIClientAuthenticator.h>
 #endif
+
+///hero
+#include <Swiften/SASL/RtpClientAuthenticator.h>
 
 #define CHECK_STATE_OR_RETURN(a) \
     if (!checkState(a)) { return; }
@@ -85,7 +89,10 @@ ClientSession::ClientSession(
             authenticator(nullptr),
             certificateTrustChecker(nullptr),
             singleSignOn(false),
-            authenticationPort(-1) {
+            authenticationPort(-1),
+            ///heroyin
+            error_(nullptr),
+	    rtpSecretKey("") {
 #ifdef SWIFTEN_PLATFORM_WIN32
 if (WindowsRegistry::isFIPSEnabled()) {
     SWIFT_LOG(info) << "Windows is running in FIPS-140 mode. Some authentication methods will be unavailable." << std::endl;
@@ -202,6 +209,11 @@ void ClientSession::handleElement(std::shared_ptr<ToplevelElement> element) {
         }
     }
     else if (StreamError::ref streamError = std::dynamic_pointer_cast<StreamError>(element)) {
+///finishSession(Error::StreamError);
+		/// hero 2015-3-2
+		if (streamError->getType()==StreamError::Conflict)
+			finishSession(Error::StreamErrorConflict);
+		else
         finishSession(Error::StreamError);
     }
     else if (getState() == State::Initialized) {
@@ -233,6 +245,9 @@ void ClientSession::handleElement(std::shared_ptr<ToplevelElement> element) {
                 const boost::optional<std::string> authenticationHostname = streamFeatures->getAuthenticationHostname();
                 bool gssapiSupported = streamFeatures->hasAuthenticationMechanism("GSSAPI") && authenticationHostname && !authenticationHostname->empty();
 
+				///heroyin 
+				finishSession(Error::NoSupportedAuthMechanismsError);
+/*
                 if (!gssapiSupported) {
                     finishSession(Error::NoSupportedAuthMechanismsError);
                 }
@@ -251,6 +266,7 @@ void ClientSession::handleElement(std::shared_ptr<ToplevelElement> element) {
                         finishSession(error);
                     }
                 }
+				*/
             }
             else
 #endif
@@ -268,6 +284,12 @@ void ClientSession::handleElement(std::shared_ptr<ToplevelElement> element) {
                 authenticator = new EXTERNALClientAuthenticator();
                 state = State::Authenticating;
                 stream->writeElement(std::make_shared<AuthRequest>("EXTERNAL", createSafeByteArray("")));
+            }
+			///hero 2017-05-02
+			else if (streamFeatures->hasAuthenticationMechanism("RTP-SECRET")) {
+				authenticator = new RtpClientAuthenticator(crypto, rtpSecretKey);
+				state = State::Authenticating;
+				onNeedCredentials();
             }
             else if (streamFeatures->hasAuthenticationMechanism("SCRAM-SHA-1") || streamFeatures->hasAuthenticationMechanism("SCRAM-SHA-1-PLUS")) {
                 std::ostringstream s;
@@ -349,12 +371,14 @@ void ClientSession::handleElement(std::shared_ptr<ToplevelElement> element) {
             stream->writeElement(std::make_shared<AuthResponse>(authenticator->getResponse()));
         }
 #ifdef SWIFTEN_PLATFORM_WIN32
-        else if (WindowsGSSAPIClientAuthenticator* gssapiAuthenticator = dynamic_cast<WindowsGSSAPIClientAuthenticator*>(authenticator)) {
+/*      
+		else if (WindowsGSSAPIClientAuthenticator* gssapiAuthenticator = dynamic_cast<WindowsGSSAPIClientAuthenticator*>(authenticator)) {
             std::shared_ptr<Error> error = std::make_shared<Error>(Error::AuthenticationFailedError);
 
             error->errorCode = gssapiAuthenticator->getErrorCode();
             finishSession(error);
         }
+*/
 #endif
         else {
             finishSession(Error::AuthenticationFailedError);
@@ -579,6 +603,16 @@ void ClientSession::handleStanzaAcked(std::shared_ptr<Stanza> stanza) {
 
 void ClientSession::ack(unsigned int handledStanzasCount) {
     stream->writeElement(std::make_shared<StanzaAck>(handledStanzasCount));
+}
+
+///hero
+std::string ClientSession::getRtpSecretKey() {
+	return rtpSecretKey;
+}
+
+///hero
+void ClientSession::setRtpSecretKey(std::string key) {
+	this->rtpSecretKey = key;
 }
 
 }

@@ -46,13 +46,17 @@ namespace Swift {
              * Returns a list of external S5B proxies. If the optinal return value is not initialized a discovery process has been started and
              * onDiscoveredProxiesChanged signal will be emitted when it is finished.
              */
-            const boost::optional<std::vector<S5BProxyRequest::ref> >& getOrDiscoverS5BProxies();
+            //const boost::optional<std::vector<S5BProxyRequest::ref> >& getOrDiscoverS5BProxies();
+///heroyin
+			const boost::optional<std::vector<S5BProxyRequest::ref> >& getOrDiscoverS5BProxies(const JID& serviceRoot);
 
             void connectToProxies(const std::string& sessionID);
             std::shared_ptr<SOCKS5BytestreamClientSession> getProxySessionAndCloseOthers(const JID& proxyJID, const std::string& sessionID);
 
             std::shared_ptr<SOCKS5BytestreamClientSession> createSOCKS5BytestreamClientSession(HostAddressPort addressPort, const std::string& destAddr);
 
+//hero
+			void closeSession(std::string sessionID);
         public:
             boost::signals2::signal<void ()> onDiscoveredProxiesChanged;
 
@@ -60,7 +64,7 @@ namespace Swift {
             void handleProxiesFound(std::vector<S5BProxyRequest::ref> proxyHosts);
             void handleNameLookupResult(const std::vector<HostAddress>&, boost::optional<DomainNameResolveError>, S5BProxyRequest::ref proxy);
 
-            void queryForProxies();
+            void queryForProxies(const JID& serviceRoot);
 
             void handleProxySessionReady(const std::string& sessionID, const JID& jid, std::shared_ptr<SOCKS5BytestreamClientSession> session, bool error);
             void handleProxySessionFinished(const std::string& sessionID, const JID& jid, std::shared_ptr<SOCKS5BytestreamClientSession> session, boost::optional<FileTransferError> error);
@@ -70,8 +74,8 @@ namespace Swift {
             TimerFactory* timerFactory_;
             DomainNameResolver* resolver_;
             IQRouter* iqRouter_;
-            JID serviceRoot_;
-
+///hero
+	//		JID serviceRoot_;
             typedef std::vector<std::pair<JID, std::shared_ptr<SOCKS5BytestreamClientSession> > > ProxyJIDClientSessionVector;
             typedef std::map<std::string, ProxyJIDClientSessionVector> ProxySessionsMap;
             ProxySessionsMap proxySessions_;

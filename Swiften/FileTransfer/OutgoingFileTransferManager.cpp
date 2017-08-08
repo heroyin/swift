@@ -62,4 +62,27 @@ std::shared_ptr<OutgoingFileTransfer> OutgoingFileTransferManager::createOutgoin
                 crypto));
 }
 
+///heroyin
+std::shared_ptr<OutgoingFileTransfer> OutgoingFileTransferManager::createOutgoingFileTransfer(
+	const JID& from,
+	const JID& recipient,
+	std::shared_ptr<ReadBytestream> readBytestream,
+	const JingleFileTransferFileInfo& fileInfo,
+	const std::string &sessionId, 
+	const FileTransferOptions& config) {
+	JingleSessionImpl::ref jingleSession = std::make_shared<JingleSessionImpl>(
+		from, recipient, sessionId, iqRouter);
+	jingleSessionManager->registerOutgoingSession(from, jingleSession);
+	return std::shared_ptr<OutgoingJingleFileTransfer>(new OutgoingJingleFileTransfer(
+		recipient,
+		jingleSession,
+		readBytestream,
+		transporterFactory,
+		timerFactory,
+		idGenerator, 
+		fileInfo,
+		config,
+		crypto));
+}
+
 }

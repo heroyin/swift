@@ -77,6 +77,8 @@ FileTransferManagerImpl::FileTransferManagerImpl(
             crypto);
     incomingFTManager = new IncomingFileTransferManager(
             jingleSessionManager,
+			///heroyin
+			router, 
             transporterFactory,
             timerFactory,
             crypto);
@@ -113,22 +115,26 @@ OutgoingFileTransfer::ref FileTransferManagerImpl::createOutgoingFileTransfer(
 
     boost::uintmax_t sizeInBytes = boost::filesystem::file_size(filepath);
     boost::posix_time::ptime lastModified = boost::posix_time::from_time_t(boost::filesystem::last_write_time(filepath));
-    return createOutgoingFileTransfer(to, filename, description, sizeInBytes, lastModified, bytestream, config);
+    return createOutgoingFileTransfer(to, filename, description, "", sizeInBytes, lastModified, bytestream, config);
 }
 
 OutgoingFileTransfer::ref FileTransferManagerImpl::createOutgoingFileTransfer(
         const JID& to,
-        const std::string& filename,
-        const std::string& description,
-        const boost::uintmax_t sizeInBytes,
-        const boost::posix_time::ptime& lastModified,
-        std::shared_ptr<ReadBytestream> bytestream,
-        const FileTransferOptions& config) {
+                    const std::string& filename,
+                    const std::string& description,
+                    ///heroyin
+                    const std::string& mediaType,
+                    const boost::uintmax_t sizeInBytes,
+                    const boost::posix_time::ptime& lastModified,
+                    std::shared_ptr<ReadBytestream> bytestream,
+                    const FileTransferOptions& config) {
     JingleFileTransferFileInfo fileInfo;
     fileInfo.setDate(lastModified);
     fileInfo.setSize(sizeInBytes);
     fileInfo.setName(filename);
     fileInfo.setDescription(description);
+///heroyin
+    fileInfo.setMediaType(mediaType);
 
     JID receipient = to;
 

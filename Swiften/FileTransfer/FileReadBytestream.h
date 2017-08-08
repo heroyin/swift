@@ -20,7 +20,10 @@ namespace Swift {
 
             virtual std::shared_ptr< std::vector<unsigned char> > read(size_t size);
             virtual bool isFinished() const;
+///hero
+			virtual void seek(const boost::uintmax_t offset, ReadBytestream::SeekType seekType);
 
+			void close();
         private:
             boost::filesystem::path file;
             boost::filesystem::ifstream* stream;

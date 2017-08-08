@@ -50,6 +50,11 @@ namespace Swift {
             virtual void start() override;
             virtual void cancel() override;
 
+			//heroyin lx，公开hashCalculator以获取已传输部分的哈希。
+			inline IncrementalBytestreamHashCalculator *getHashCalculator() {
+				return hashCalculator;
+			}
+
         private:
             enum State {
                 Initial,

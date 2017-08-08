@@ -49,4 +49,33 @@ void FileWriteBytestream::close() {
     }
 }
 
+///hero
+void FileWriteBytestream::seek(const boost::uintmax_t offset, WriteBytestream::SeekType seekType) 
+{
+	if (!stream) {
+ 
+		stream = new boost::filesystem::ofstream(file, std::ios_base::app | std::ios_base::binary);
+	}
+	//assert(stream->good());
+
+	std::ifstream::seekdir offType;
+	switch (seekType)
+	{
+	case WriteBytestream::beg:
+		offType = std::ifstream::beg;
+		break;
+	case WriteBytestream::cur:
+		offType = std::ifstream::cur;
+		break;
+	case WriteBytestream::end:
+		offType = std::ifstream::end;
+		break;
+	default:
+		offType = std::ifstream::beg;
+		break;
+	}
+
+	stream->seekp(offset, offType);
+}
+
 }

@@ -24,6 +24,8 @@
 
 namespace Swift {
 
+/**
+old
 JingleContentPayloadSerializer::JingleContentPayloadSerializer() {
 }
 
@@ -63,6 +65,39 @@ std::string JingleContentPayloadSerializer::serializePayload(std::shared_ptr<Jin
     }
     return payloadXML.serialize();
 }
+*/
+
+
+///hero
+JingleContentPayloadSerializer::JingleContentPayloadSerializer(PayloadSerializerCollection* serializers) : serializers(serializers) {
+}
+
+///hero
+std::string JingleContentPayloadSerializer::serializePayload(std::shared_ptr<JingleContentPayload> payload) const {
+	XMLElement payloadXML("content");
+	payloadXML.setAttribute("creator", creatorToString(payload->getCreator()));
+	payloadXML.setAttribute("name", payload->getName());
+	payloadXML.setAttribute("senders", sendersToString(payload->getSenders())); 
+
+	if (!payload->getDescriptions().empty()) {
+		for (auto&& desc : payload->getDescriptions()) {
+			PayloadSerializer* serializer = serializers->getPayloadSerializer(desc);
+			if (serializer) {
+				payloadXML.addNode(std::make_shared<XMLRawTextNode>(serializer->serialize(desc)));
+			}
+		}
+	}
+
+	if (!payload->getTransports().empty()) {
+		for (auto&& transport : payload->getTransports()) {
+			PayloadSerializer* serializer = serializers->getPayloadSerializer(transport);
+			if (serializer) {
+				payloadXML.addNode(std::make_shared<XMLRawTextNode>(serializer->serialize(transport)));
+			}
+		}
+	}
+	return payloadXML.serialize();
+}
 
 std::string JingleContentPayloadSerializer::creatorToString(JingleContentPayload::Creator creator) const {
     switch(creator) {
@@ -77,4 +112,19 @@ std::string JingleContentPayloadSerializer::creatorToString(JingleContentPayload
     assert(false);
     return "";
 }
+
+
+std::string JingleContentPayloadSerializer::sendersToString(JingleContentPayload::Senders senders) const {
+	switch (senders) {
+	case JingleContentPayload::InitiatorSender:
+		return "initiator";
+	case JingleContentPayload::ResponderSender:
+		return "responder";
+	case JingleContentPayload::BothSenders:
+		return "both";
+	default:
+		return "none";
+	}
+}
+
 }

@@ -60,6 +60,8 @@ namespace Swift {
                     TLSError,
                     StreamError,
                     StreamEndError, // The server send a closing stream tag.
+///hero 2015-3-2
+					StreamErrorConflict
                 } type;
                 std::shared_ptr<boost::system::error_code> errorCode;
                 Error(Type type) : type(type) {}
@@ -145,6 +147,10 @@ namespace Swift {
                 sessionShutdownTimeoutInMilliseconds = timeoutInMilliseconds;
             }
 
+
+///hero
+			std::string getRtpSecretKey();
+			void setRtpSecretKey(std::string key);
         public:
             boost::signals2::signal<void ()> onNeedCredentials;
             boost::signals2::signal<void ()> onInitialized;
@@ -211,5 +217,7 @@ namespace Swift {
             CertificateTrustChecker* certificateTrustChecker;
             bool singleSignOn;
             int authenticationPort;
+///hero
+			std::string rtpSecretKey;
     };
 }

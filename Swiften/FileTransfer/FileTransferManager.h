@@ -42,10 +42,28 @@ namespace Swift {
                     const JID& to,
                     const std::string& filename,
                     const std::string& description,
+                    ///heroyin
+                    const std::string& mediaType,
                     const boost::uintmax_t sizeInBytes,
                     const boost::posix_time::ptime& lastModified,
                     std::shared_ptr<ReadBytestream> bytestream,
-                    const FileTransferOptions& = FileTransferOptions()) = 0;
+                    const FileTransferOptions& options) = 0;
+
+       ///heroyin
+         virtual OutgoingFileTransfer::ref createOutgoingFileTransfer(
+				const JID& to,
+				const std::string& filename,
+				const std::string& description,
+				const std::string& mediaType,
+				const boost::uintmax_t sizeInBytes,
+				const boost::posix_time::ptime& lastModified,
+				std::shared_ptr<ReadBytestream> bytestream,
+				const std::string &sessionId = "",
+				const FileTransferOptions& = FileTransferOptions())
+			{
+				return OutgoingFileTransfer::ref();
+			};
+
 
             boost::signals2::signal<void (IncomingFileTransfer::ref)> onIncomingFileTransfer;
     };

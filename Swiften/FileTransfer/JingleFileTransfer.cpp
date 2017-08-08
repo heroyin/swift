@@ -74,6 +74,14 @@ boost::optional<FileTransferError> JingleFileTransfer::getFileTransferError(Jing
     if (reason == JinglePayload::Reason::Success) {
         return boost::optional<FileTransferError>();
     }
+///hero
+	else if (reason == JinglePayload::Reason::Cancel){
+		return boost::optional<FileTransferError>(FileTransferError::CancelError);
+	}
+	///hero
+	else if (reason == JinglePayload::Reason::Cancel){
+		return boost::optional<FileTransferError>(FileTransferError::DeclineError);
+	}
     else {
         return boost::optional<FileTransferError>(FileTransferError::UnknownError);
     }

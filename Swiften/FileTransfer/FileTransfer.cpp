@@ -23,4 +23,6 @@ void FileTransfer::setFileInfo(const std::string& name, boost::uintmax_t size, c
     filename_ = name;
     fileSizeInBytes_ = size;
     description_ = description;
+    ///heroyin
+    this->mideaType = mideaType;
 }

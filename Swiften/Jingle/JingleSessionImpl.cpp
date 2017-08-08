@@ -26,6 +26,14 @@ JingleSessionImpl::JingleSessionImpl(const JID& initiator, const JID& peerJID, c
     SWIFT_LOG(debug) << "initiator: " << initiator << ", peerJID: " << peerJID << std::endl;
 }
 
+///heroyin
+JingleSessionImpl::~JingleSessionImpl()
+{
+	SWIFT_LOG(debug) << "JingleSessionImpl destory pendingRequests size " << pendingRequests.size() << std::endl;
+	for(auto &i: pendingRequests){
+		i.second.disconnect();
+	}
+}
 void JingleSessionImpl::handleIncomingAction(JinglePayload::ref action) {
     if (action->getAction() == JinglePayload::SessionTerminate) {
         notifyListeners(&JingleSessionListener::handleSessionTerminateReceived, action->getReason());
@@ -86,6 +94,8 @@ void JingleSessionImpl::sendInitiate(const JingleContentID& id, JingleDescriptio
     JingleContentPayload::ref content = std::make_shared<JingleContentPayload>();
     content->setCreator(id.getCreator());
     content->setName(id.getName());
+    ///hero
+    content->setSenders(id.getSenders());
     content->addDescription(description);
     content->addTransport(transport);
     payload->addPayload(content);
@@ -113,6 +123,8 @@ void JingleSessionImpl::sendAccept(const JingleContentID& id, JingleDescription:
     JingleContentPayload::ref content = std::make_shared<JingleContentPayload>();
     content->setCreator(id.getCreator());
     content->setName(id.getName());
+    ///hero
+    content->setSenders(id.getSenders());
     content->addTransport(transPayload);
     content->addDescription(description);
     payload->setAction(JinglePayload::SessionAccept);
@@ -129,6 +141,8 @@ void JingleSessionImpl::sendTransportAccept(const JingleContentID& id, JingleTra
     JingleContentPayload::ref content = std::make_shared<JingleContentPayload>();
     content->setCreator(id.getCreator());
     content->setName(id.getName());
+	///hero
+	content->setSenders(id.getSenders());
     content->addTransport(transPayload);
     payload->setAction(JinglePayload::TransportAccept);
     payload->addPayload(content);
@@ -143,6 +157,8 @@ std::string JingleSessionImpl::sendTransportInfo(const JingleContentID& id, Jing
     JingleContentPayload::ref content = std::make_shared<JingleContentPayload>();
     content->setCreator(id.getCreator());
     content->setName(id.getName());
+	///hero
+	content->setSenders(id.getSenders());
     content->addTransport(transPayload);
     payload->setAction(JinglePayload::TransportInfo);
     payload->addPayload(content);
@@ -182,7 +198,9 @@ std::string JingleSessionImpl::sendSetRequest(JinglePayload::ref payload) {
             IQ::Set, peerJID, payload, iqRouter);
     pendingRequests.insert(std::make_pair(
         request,
-        request->onResponse.connect(boost::bind(&JingleSessionImpl::handleRequestResponse, this, request))));
+		///hero
+        request->onResponse.connect(boost::bind(&JingleSessionImpl::handleRequestResponse, this, request, _2))));
+///        request->onResponse.connect(boost::bind(&JingleSessionImpl::handleRequestResponse, this, request))));
     return request->send();
 }
 
@@ -194,7 +212,9 @@ JinglePayload::ref JingleSessionImpl::createPayload() const {
     return payload;
 }
 
-void JingleSessionImpl::handleRequestResponse(RequestRef request) {
+///hero
+void JingleSessionImpl::handleRequestResponse(RequestRef request, ErrorPayload::ref error) {
+///void JingleSessionImpl::handleRequestResponse(RequestRef request) {
     RequestsMap::iterator i = pendingRequests.find(request);
     assert(i != pendingRequests.end());
     if (i->first->getPayloadGeneric()->getAction() == JinglePayload::TransportInfo) {
@@ -202,6 +222,18 @@ void JingleSessionImpl::handleRequestResponse(RequestRef request) {
     }
     i->second.disconnect();
     pendingRequests.erase(i);
+
+    ///heroyin trigger terminate when get error result
+	if (error){
+		onError(error);
+
+		JinglePayload::ref payload = std::make_shared<JinglePayload>(JinglePayload::SessionTerminate, getID());
+		payload->setReason(JinglePayload::Reason::Gone);
+		payload->setInitiator(getInitiator());
+
+		handleIncomingAction(payload);
+	}
+
 }
 
 

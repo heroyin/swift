@@ -38,6 +38,15 @@ namespace Swift {
                 BothSenders,
             };*/
 
+			///hero
+			enum Senders {
+				NoSenders,
+				InitiatorSender,
+				ResponderSender,
+				BothSenders,
+			};
+
+
             Creator getCreator() const {
                 return creator;
             }
@@ -45,6 +54,16 @@ namespace Swift {
             void setCreator(Creator creator) {
                 this->creator = creator;
             }
+
+			///hero
+			Senders getSenders() const {
+				return this->senders;
+			}
+		    ///hero
+			void setSenders(Senders senders) {
+				this->senders = senders;
+			}
+
 
             const std::string& getName() const {
                 return name;
@@ -96,6 +115,8 @@ namespace Swift {
             Creator creator;
             std::string name;
             //Senders senders;
+			///hero
+			Senders senders;
             std::vector<JingleDescription::ref> descriptions;
             std::vector<std::shared_ptr<JingleTransportPayload> > transports;
     };

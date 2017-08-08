@@ -33,6 +33,20 @@ namespace Swift {
                 getPayloadInternal()->setCreator(JingleContentPayload::UnknownCreator);
             }
 
+			std::string senders = attributes.getAttributeValue("senders").get_value_or("");
+			if (senders == "both") {
+				getPayloadInternal()->setSenders(JingleContentPayload::BothSenders);
+			}///heroyin
+			else if (senders == "initiator") {
+				getPayloadInternal()->setSenders(JingleContentPayload::InitiatorSender);
+			}///heroyin
+			else if (senders == "responder") {
+				getPayloadInternal()->setSenders(JingleContentPayload::ResponderSender);
+			}
+			else {
+				getPayloadInternal()->setSenders(JingleContentPayload::NoSenders);
+			}
+
             getPayloadInternal()->setName(attributes.getAttributeValue("name").get_value_or(""));
         }
 

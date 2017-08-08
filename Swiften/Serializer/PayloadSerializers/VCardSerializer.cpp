@@ -21,6 +21,17 @@ VCardSerializer::VCardSerializer() : GenericPayloadSerializer<VCard>() {
 
 std::string VCardSerializer::serializePayload(std::shared_ptr<VCard> vcard)  const {
     XMLElement queryElement("vCard", "vcard-temp");
+///hero
+	if (!vcard->getMobile().empty()) {
+		queryElement.addNode(std::make_shared<XMLElement>("MOBILE", "", vcard->getMobile()));
+	}
+	if (!vcard->getSip().empty()) {
+		queryElement.addNode(std::make_shared<XMLElement>("SIP", "", vcard->getSip()));
+	}
+	if (!vcard->getSex().empty()) {
+		queryElement.addNode(std::make_shared<XMLElement>("SEX", "", vcard->getSex()));
+	}
+
     if (!vcard->getVersion().empty()) {
         queryElement.addNode(std::make_shared<XMLElement>("VERSION", "", vcard->getVersion()));
     }
@@ -76,12 +87,22 @@ std::string VCardSerializer::serializePayload(std::shared_ptr<VCard> vcard)  con
         }
         if (!vcard->getPhoto().empty()) {
             photoElement->addNode(std::make_shared<XMLElement>("BINVAL", "", Base64::encode(vcard->getPhoto())));
+///hero lx
+		if (!vcard->getPhotoHash().empty()) {
+			photoElement->addNode(std::make_shared<XMLElement>("HASH", "", vcard->getPhotoHash())); 
+		}
         }
         queryElement.addNode(photoElement);
     }
-    if (!vcard->getBirthday().is_not_a_date_time()) {
-        queryElement.addNode(std::make_shared<XMLElement>("BDAY", "", dateTimeToString(vcard->getBirthday())));
-    }
+///hero
+	if (!vcard->getBirthday().empty()) {
+		queryElement.addNode(std::make_shared<XMLElement>("BDAY", "", vcard->getBirthday()));
+	}
+	/*
+	if (!vcard->getBirthday().is_not_a_date_time()) {
+	queryElement.addNode(boost::make_shared<XMLElement>("BDAY", "", dateTimeToString(vcard->getBirthday())));
+	}
+	*/
 
     for (const auto& telephone : vcard->getTelephones()) {
         std::shared_ptr<XMLElement> telElement(new XMLElement("TEL"));
@@ -227,6 +248,11 @@ std::string VCardSerializer::serializePayload(std::shared_ptr<VCard> vcard)  con
         }
         queryElement.addNode(orgElement);
     }
+
+///hero
+if (!vcard->getOrgGroup().empty()) {
+		queryElement.addNode(std::make_shared<XMLElement>("ORGGROUP", "", vcard->getOrgGroup()));
+	}
 
     for (const auto& title : vcard->getTitles()) {
         queryElement.addNode(std::make_shared<XMLElement>("TITLE", "", title));

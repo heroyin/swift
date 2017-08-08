@@ -76,10 +76,12 @@ namespace Swift {
                     const JID& to,
                     const std::string& filename,
                     const std::string& description,
+                    ///heroyin
+                    const std::string& mediaType,
                     const boost::uintmax_t sizeInBytes,
                     const boost::posix_time::ptime& lastModified,
                     std::shared_ptr<ReadBytestream> bytestream,
-                    const FileTransferOptions&) override;
+                    const FileTransferOptions& options) override;
 
             void start();
             void stop();

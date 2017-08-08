@@ -147,7 +147,8 @@ FullPayloadSerializerCollection::FullPayloadSerializerCollection() {
 
     serializers_.push_back(new StreamInitiationFileInfoSerializer());
     serializers_.push_back(new JingleFileTransferFileInfoSerializer());
-    serializers_.push_back(new JingleContentPayloadSerializer());
+	///heroyin
+    serializers_.push_back(new JingleContentPayloadSerializer(this));
     serializers_.push_back(new JingleFileTransferDescriptionSerializer());
     serializers_.push_back(new JingleFileTransferHashSerializer());
     serializers_.push_back(new JingleIBBTransportPayloadSerializer());

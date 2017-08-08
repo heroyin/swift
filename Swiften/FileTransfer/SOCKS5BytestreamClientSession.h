@@ -12,9 +12,12 @@
 
 #pragma once
 
+#include <set>
 #include <memory>
 
 #include <boost/optional.hpp>
+///heroyin
+#include <boost/thread/recursive_mutex.hpp>
 
 #include <Swiften/Base/API.h>
 #include <Swiften/Base/ByteArray.h>
@@ -71,12 +74,17 @@ public:
     boost::signals2::signal<void (boost::optional<FileTransferError>)> onFinished;
     boost::signals2::signal<void (size_t)> onBytesSent;
     // boost::signals2::signal<void (size_t)> onBytesReceived;
-
+///hero
+	boost::signals2::signal<void (size_t)> onBytesReceived;
+	///hero
+	void closeConnection();
 private:
     void process();
     void hello();
     void authenticate();
 
+///heroyin
+	void handleDataAvailable();
     void handleConnectFinished(bool error);
     void handleDataRead(std::shared_ptr<SafeByteArray>);
     void handleDisconnected(const boost::optional<Connection::Error>&);
@@ -84,10 +92,11 @@ private:
 
     void finish(bool error);
     void sendData();
-    void closeConnection();
+   // void closeConnection();
 
 private:
     std::shared_ptr<Connection> connection;
+
     HostAddressPort addressPort;
     std::string destination; // hexify(SHA1(sessionID + requester + target))
 
@@ -102,10 +111,18 @@ private:
 
     Timer::ref weFailedTimeout;
 
+///heroyin
+	bool waitingForData;
+///heroyin
+	boost::signals2::connection dataAvailableConnection;
+
     boost::signals2::scoped_connection connectFinishedConnection;
     boost::signals2::scoped_connection dataWrittenConnection;
     boost::signals2::scoped_connection dataReadConnection;
     boost::signals2::scoped_connection disconnectedConnection;
+
+///heroyin
+	boost::recursive_mutex streamMutex;
 };
 
 }

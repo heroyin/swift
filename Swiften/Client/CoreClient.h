@@ -141,6 +141,9 @@ namespace Swift {
              */
             void setCertificateTrustChecker(CertificateTrustChecker*);
 
+///hero
+			std::string getRtpSecretKey();
+			void setRtpSecretKey(std::string key);
         public:
             /**
              * Emitted when the client was disconnected from the network.
@@ -155,6 +158,8 @@ namespace Swift {
              * and stanzas can be sent.
              */
             boost::signals2::signal<void ()> onConnected;
+            ///hero
+            boost::signals2::signal<void()> onSocketConnected;
 
             /**
              * Emitted when the client receives data.
@@ -204,6 +209,8 @@ namespace Swift {
              */
             virtual void handleConnected() {}
 
+            ///hero
+            std::shared_ptr<Connection> connection_;
         private:
             void handleConnectorFinished(std::shared_ptr<Connection>, std::shared_ptr<Error> error);
             void handleStanzaChannelAvailableChanged(bool available);
@@ -230,11 +237,14 @@ namespace Swift {
             ClientOptions options;
             std::shared_ptr<ChainedConnector> connector_;
             std::vector<ConnectionFactory*> proxyConnectionFactories;
-            std::shared_ptr<Connection> connection_;
+			///hero
+           /// std::shared_ptr<Connection> connection_;
             std::shared_ptr<SessionStream> sessionStream_;
             std::shared_ptr<ClientSession> session_;
             CertificateWithKey::ref certificate_;
             bool disconnectRequested_;
             CertificateTrustChecker* certificateTrustChecker;
+            ///hero
+            std::string rtpSecretKey;
     };
 }

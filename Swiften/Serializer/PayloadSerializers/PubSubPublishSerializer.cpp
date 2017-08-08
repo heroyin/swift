@@ -13,7 +13,27 @@
 #include <Swiften/Serializer/XML/XMLElement.h>
 #include <Swiften/Serializer/XML/XMLRawTextNode.h>
 
+///hero
+#include <Swiften/Serializer/PayloadSerializers/FormSerializer.h>
+
 using namespace Swift;
+
+///hero add publish options
+PubSubPublishOptionsSerializer::PubSubPublishOptionsSerializer(PayloadSerializerCollection* serializers) : serializers(serializers) {
+}
+
+PubSubPublishOptionsSerializer::~PubSubPublishOptionsSerializer() {
+}
+
+std::string PubSubPublishOptionsSerializer::serializePayload(std::shared_ptr<PubSubPublishOptions> payload) const {
+	if (!payload) {
+		return "";
+	}
+	XMLElement element("publish-options", "http://jabber.org/protocol/pubsub");
+	element.addNode(std::make_shared<XMLRawTextNode>(FormSerializer().serialize(payload->getData())));
+	return element.serialize();
+}
+///end
 
 PubSubPublishSerializer::PubSubPublishSerializer(PayloadSerializerCollection* serializers) : serializers(serializers) {
 }

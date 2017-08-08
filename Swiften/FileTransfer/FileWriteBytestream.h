@@ -21,6 +21,8 @@ namespace Swift {
             virtual bool write(const std::vector<unsigned char>&);
             virtual void close();
 
+///hero
+			virtual void seek(const boost::uintmax_t offset, WriteBytestream::SeekType seekType);
         private:
             boost::filesystem::path file;
             boost::filesystem::ofstream* stream;

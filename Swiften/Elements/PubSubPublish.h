@@ -15,7 +15,32 @@
 #include <Swiften/Elements/PubSubItem.h>
 #include <Swiften/Elements/PubSubPayload.h>
 
+///hero
+#include <Swiften/Elements/Form.h>
+
 namespace Swift {
+
+	///hero add publish options
+	class SWIFTEN_API PubSubPublishOptions : public Payload {
+	public:
+
+		PubSubPublishOptions();
+
+		virtual ~PubSubPublishOptions();
+
+		std::shared_ptr<Form> getData() const {
+			return data;
+		}
+
+		void setData(std::shared_ptr<Form> value) {
+			this->data = value;
+		}
+	private:
+		std::shared_ptr<Form> data;
+	};
+	///end
+
+
     class SWIFTEN_API PubSubPublish : public PubSubPayload {
         public:
 
@@ -43,9 +68,19 @@ namespace Swift {
                 this->items.push_back(value);
             }
 
+///hero add publish options
+			std::shared_ptr<PubSubPublishOptions> getOptions() const {
+				return options;
+			}
 
+			///hero add publish options
+			void setOptions(std::shared_ptr<PubSubPublishOptions> value) {
+				this->options = value;
+			}
         private:
             std::string node;
             std::vector< std::shared_ptr<PubSubItem> > items;
+///hero add publish options
+	    std::shared_ptr<PubSubPublishOptions> options;
     };
 }

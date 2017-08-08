@@ -15,6 +15,9 @@
 #include <Swiften/Elements/Form.h>
 #include <Swiften/Elements/Payload.h>
 
+///hero
+#include <Swiften/Elements/ResultSet.h>
+
 namespace Swift {
     /**
      * XEP-0055 search payload.
@@ -84,6 +87,10 @@ namespace Swift {
                 items.push_back(item);
             }
 
+			///hero
+			std::shared_ptr<ResultSet> getResultSet() const { return resultSet; }
+			void setResultSet(std::shared_ptr<ResultSet> r) { resultSet = r; }
+
         private:
             Form::ref form;
             boost::optional<std::string> instructions;
@@ -92,5 +99,7 @@ namespace Swift {
             boost::optional<std::string> last;
             boost::optional<std::string> email;
             std::vector<Item> items;
+///hero
+			std::shared_ptr<ResultSet> resultSet;
     };
 }

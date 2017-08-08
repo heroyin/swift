@@ -15,6 +15,21 @@
 namespace Swift {
     class PayloadSerializerCollection;
 
+	///hero add publish options
+	class SWIFTEN_API PubSubPublishOptionsSerializer : public GenericPayloadSerializer<PubSubPublishOptions> {
+	public:
+		PubSubPublishOptionsSerializer(PayloadSerializerCollection* serializers);
+		virtual ~PubSubPublishOptionsSerializer();
+
+		virtual std::string serializePayload(std::shared_ptr<PubSubPublishOptions>) const override;
+
+	private:
+		PayloadSerializerCollection* serializers;
+	};
+	///end
+
+
+
     class SWIFTEN_API PubSubPublishSerializer : public GenericPayloadSerializer<PubSubPublish> {
         public:
             PubSubPublishSerializer(PayloadSerializerCollection* serializers);

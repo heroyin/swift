@@ -8,6 +8,15 @@
 
 using namespace Swift;
 
+///hero add publish options
+PubSubPublishOptions::PubSubPublishOptions() {
+}
+
+PubSubPublishOptions::~PubSubPublishOptions() {
+}
+///end
+
+
 PubSubPublish::PubSubPublish() {
 }
 

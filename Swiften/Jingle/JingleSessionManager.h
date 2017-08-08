@@ -26,6 +26,8 @@ namespace Swift {
             ~JingleSessionManager();
 
             JingleSessionImpl::ref getSession(const JID& jid, const std::string& id) const;
+            ///heroyin
+            void removeSession(const JID &jid, const std::string id);
 
             void addIncomingSessionHandler(IncomingJingleSessionHandler* handler);
             void removeIncomingSessionHandler(IncomingJingleSessionHandler* handler);

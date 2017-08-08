@@ -148,7 +148,9 @@ void OutgoingJingleFileTransfer::handleSessionTerminateReceived(boost::optional<
         waitForRemoteTermination->stop();
     }
     if (reason && reason->type == JinglePayload::Reason::Cancel) {
-        setFinishedState(FileTransfer::State::Canceled, FileTransferError(FileTransferError::PeerError));
+       ///hero
+       setFinishedState(FileTransfer::State::Canceled, FileTransferError(FileTransferError::CancelError));
+       /// setFinishedState(FileTransfer::State::Canceled, FileTransferError(FileTransferError::PeerError));
     }
     else if (reason && reason->type == JinglePayload::Reason::Decline) {
         setFinishedState(FileTransfer::State::Canceled, boost::optional<FileTransferError>());
@@ -156,6 +158,10 @@ void OutgoingJingleFileTransfer::handleSessionTerminateReceived(boost::optional<
     else if (reason && reason->type == JinglePayload::Reason::Success) {
         setFinishedState(FileTransfer::State::Finished, boost::optional<FileTransferError>());
     }
+///hero
+	if (reason && reason->type == JinglePayload::Reason::Decline) {
+		setFinishedState(FileTransfer::State::Failed, FileTransferError(FileTransferError::DeclineError));
+	}
     else {
         setFinishedState(FileTransfer::State::Failed, FileTransferError(FileTransferError::PeerError));
     }
@@ -399,9 +405,10 @@ std::shared_ptr<TransportSession> OutgoingJingleFileTransfer::createRemoteCandid
 }
 
 void OutgoingJingleFileTransfer::handleWaitForRemoteTerminationTimeout() {
-    assert(state == WaitForTermination);
-    SWIFT_LOG(warning) << "Other party did not terminate session. Terminate it now." << std::endl;
-    waitForRemoteTermination->stop();
-    terminate(JinglePayload::Reason::MediaError);
+///heroyin,do not check time out
+ //   assert(state == WaitForTermination);
+ //   SWIFT_LOG(warning) << "Other party did not terminate session. Terminate it now." << std::endl;
+ //   waitForRemoteTermination->stop();
+ //   terminate(JinglePayload::Reason::MediaError);
 }
 

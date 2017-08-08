@@ -116,6 +116,14 @@ void IncomingJingleFileTransfer::cancel() {
     terminate(state == Initial ? JinglePayload::Reason::Decline : JinglePayload::Reason::Cancel);
 }
 
+void IncomingJingleFileTransfer::feedMissingData(const std::vector<unsigned char> &data)
+{
+	if (hashCalculator)
+	{ 
+		hashCalculator->feedData(data);
+		receivedBytes += data.size();
+	}
+}
 void IncomingJingleFileTransfer::handleLocalTransportCandidatesGenerated(
         const std::string& s5bSessionID,
         const std::vector<JingleS5BTransportPayload::Candidate>& candidates,
@@ -172,7 +180,14 @@ void IncomingJingleFileTransfer::handleSessionTerminateReceived(boost::optional<
 
     stopAll();
     if (reason && reason->type == JinglePayload::Reason::Cancel) {
-        setFinishedState(FileTransfer::State::Canceled, FileTransferError(FileTransferError::PeerError));
+       // setFinishedState(FileTransfer::State::Canceled, FileTransferError(FileTransferError::PeerError));
+///hero
+		setFinishedState(FileTransfer::State::Canceled, FileTransferError(FileTransferError::CancelError));
+}
+	else if (reason && reason->type == JinglePayload::Reason::Decline) {
+		///hero
+		setFinishedState(FileTransfer::State::Failed, FileTransferError(FileTransferError::DeclineError));
+	
     }
     else if (reason && reason->type == JinglePayload::Reason::Success) {
         setFinishedState(FileTransfer::State::Finished, boost::optional<FileTransferError>());
@@ -323,8 +338,14 @@ FileTransfer::State::Type IncomingJingleFileTransfer::getExternalState(State sta
 void IncomingJingleFileTransfer::stopAll() {
     if (state != Initial) {
         writeStreamDataReceivedConnection.disconnect();
-        delete hashCalculator;
-        hashCalculator = nullptr;
+
+///hero
+		if (hashCalculator){
+			delete hashCalculator;
+			hashCalculator = NULL;
+		}
+       // delete hashCalculator;
+        //hashCalculator = nullptr;
     }
     switch (state) {
         case Initial: break;
@@ -413,7 +434,10 @@ void IncomingJingleFileTransfer::terminate(JinglePayload::Reason::Type reason) {
 
     if (state != Finished) {
         session->sendTerminate(reason);
-    }
+}///hero
+	else{
+		return;
+	}
     stopAll();
     setFinishedState(getExternalFinishedState(reason), getFileTransferError(reason));
 }

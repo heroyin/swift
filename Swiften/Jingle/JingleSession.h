@@ -17,6 +17,8 @@
 #include <Swiften/Base/Listenable.h>
 #include <Swiften/Elements/JinglePayload.h>
 #include <Swiften/JID/JID.h>
+///hero
+#include <Swiften/Elements/ErrorPayload.h>
 
 namespace Swift {
     class JingleSessionListener;
@@ -45,7 +47,8 @@ namespace Swift {
             virtual void sendTransportAccept(const JingleContentID&, JingleTransportPayload::ref) = 0;
             virtual void sendTransportReject(const JingleContentID&, JingleTransportPayload::ref) = 0;
             virtual void sendTransportReplace(const JingleContentID&, JingleTransportPayload::ref) = 0;
-
+            ///hero
+            boost::signals2::signal<void (ErrorPayload::ref error)> onError;
         private:
             JID initiator;
             std::string id;

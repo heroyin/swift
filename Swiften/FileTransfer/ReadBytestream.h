@@ -16,6 +16,13 @@
 namespace Swift {
     class SWIFTEN_API ReadBytestream {
         public:
+///hero 
+			enum SeekType{
+				beg,
+				cur,
+				end
+			};
+
             virtual ~ReadBytestream();
 
             /**
@@ -26,6 +33,8 @@ namespace Swift {
 
             virtual bool isFinished() const = 0;
 
+///hero
+			virtual void seek(const boost::uintmax_t offset, ReadBytestream::SeekType seekType) = 0;
         public:
             boost::signals2::signal<void ()> onDataAvailable;
             boost::signals2::signal<void (const std::vector<unsigned char>&)> onRead;
