@@ -84,3 +84,5 @@ compile_commands.json
 *.vcxproj.filters
 *.vcxproj.user
 *.sdf
+*.obj.*
+*.bak

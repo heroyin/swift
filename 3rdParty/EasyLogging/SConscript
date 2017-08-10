@@ -1,0 +1,17 @@
+Import(["env", "conf_env"])
+
+if env["SCONS_STAGE"] == "flags" :
+	env["EASYLOGGING_FLAGS"] = {
+			"CPPDEFINES": ["ELPP_AS_DLL", "WIN32_LEAN_AND_MEAN", "ELPP_NO_DEFAULT_LOG_FILE", "ELPP_THREAD_SAFE", "ELPP_USE_STD_THREADING"],
+			"CPPPATH": [Dir(".")],
+			"LIBPATH": [Dir(".")],
+			"LIBS": ["EasyLogging"],
+		}
+
+if env["SCONS_STAGE"] == "build" :
+	myenv = env.Clone()
+
+	myenv.Append(CPPDEFINES = ["ELPP_AS_DLL", "WIN32_LEAN_AND_MEAN", "ELPP_NO_DEFAULT_LOG_FILE", "ELPP_THREAD_SAFE", "ELPP_USE_STD_THREADING"])
+
+
+	myenv.StaticLibrary("EasyLogging", ["easylogging++.cc"], CPPPATH = ["."])
