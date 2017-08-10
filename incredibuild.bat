@@ -1,0 +1,1 @@
+XGConsole /command="scons -u -j16 swiften" /openmonitor /profile="incredibuild.xml"

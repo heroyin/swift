@@ -273,7 +273,9 @@ if env["debug"] :
         if env["set_iterator_debug_level"] :
             env.Append(CPPDEFINES = ["_ITERATOR_DEBUG_LEVEL=0"])
         env.Append(LINKFLAGS = ["/OPT:NOREF"])
-        env.Append(CCFLAGS = ["/MD"])
+	# heroyin
+	env.Append(CCFLAGS = ["/MDd"])
+        # env.Append(CCFLAGS = ["/MD"])
     else :
         env.Append(CCFLAGS = ["-g"])
 elif env["PLATFORM"] == "win32" :
