@@ -40,6 +40,8 @@ std::string Request::send() {
         router_->addHandler(shared_from_this());
     }
     catch (const std::exception&) {
+        ///heroyin
+	SWIFT_LOG(error) << "addHandler by shared_from_this failed ";
         router_->addHandler(this);
     }
 
@@ -68,7 +70,9 @@ bool Request::handleIQ(std::shared_ptr<IQ> iq) {
                         handleResponse(std::shared_ptr<Payload>(), ErrorPayload::ref(new ErrorPayload(ErrorPayload::UndefinedCondition)));
                     }
                 }
-                router_->removeHandler(this);
+                ///heroyin
+		router_->removeHandler(shared_from_this());
+		///router_->removeHandler(this);
                 handled = true;
             }
         }
@@ -86,9 +90,10 @@ bool Request::isCorrectSender(const JID& jid) {
         return router_->isAccountJID(jid);
     }
     else {
-        return jid.equals(receiver_, JID::WithResource);
+        ///hero   屏蔽JID匹配检测, 服务器在实现创建讨论组指令时有问题
+	///return jid.equals(receiver_, JID::WithResource);
+	return true;
     }
 }
-
 
 }

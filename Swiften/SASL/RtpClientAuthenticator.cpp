@@ -4,13 +4,16 @@
  * See the COPYING file for more information.
  */
 
-#include <Swiften/SASL/RtpClientAuthenticator.h>
+#include <Swiften/Base/Log.h>
 #include <Swiften/Base/Concat.h>
+#include <Swiften/SASL/RtpClientAuthenticator.h>
 #include <Swiften/StringCodecs/Hexify.h>
 
 //#include <openssl/aes.h>
 //#include <openssl/evp.h>
 //#include <openssl/sha.h>
+
+#include "aes.h"
 
 namespace Swift {
 
@@ -53,23 +56,59 @@ void encrypt(const unsigned char* in, int inl, unsigned char *out, int* len, uns
 */
 
 SafeByteArray RtpClientAuthenticator::buildSecret(const SafeByteArray& text) const{
-	return text;
-	/*
-	unsigned char content[400];
+//	return text;
+	
 	//unsigned char key[] = "RTP-SECRET-SEED";
 	//unsigned char key[] = { -28, 101, 114, -36, 52, -119, -15, -113, 12, -37, 55, -34, 52, -17, 65, -53 };
 
-	unsigned char en[400], de[400], base64[400], base64_out[400];
-	int len;
-	memset(content, 0, 400);
-	memset(en, 0, 400);
-	memset(de, 0, 400);
-	memset(base64, 0, 400);
-	memset(base64_out, 0, 400);
-	strcpy((char *)content, (char *)vecptr(text));
+	unsigned char in[160], en[160], de[160];
+
+	memset(in, 0, 160);
+	memset(en, 0, 160);
+	memset(de, 0, 160);
 
 	ByteArray keyArray = m_crypto->getSHA1Hash(createByteArray(m_key));
 
+	for (int i = 0; i < text.size(); i++) {
+       in[i] = text[i];
+    }
+
+	int len = text.size() / 16 + 1;
+	int padding = text.size() % 16;
+	if(padding == 0){
+		for (int i = text.size(); i < text.size()+16; i++) {
+			in[i] = 0x10;
+		}
+	}
+	else
+	{
+		for (int i = text.size(); i < text.size() + 16 - padding; i++) {
+			in[i] = 16 - padding;
+		}
+	}
+
+//	for (int i = 0; i < sizeof(in); ++i)
+//		printf("%.2x", in[i]);
+
+
+	for(int i=0;i<len;i++){
+		AES_ECB_encrypt(in+(i*16), vecptr(keyArray), en+(i*16), 16);
+	}
+
+	ByteArray result = createByteArray((char *)en, len*16);
+
+	std::string hex = Hexify::hexify(result);
+
+	return createSafeByteArray(Hexify::hexify(result));
+
+/*
+	for(int i = 0; i < 4; ++i)
+    {
+        AES_ECB_encrypt(vecptr() + (i*16), key, buf+(i*16), 16);
+        phex(buf + (i*16));
+    }
+
+/*
 	SHA_CTX s;
 	int i, size;
 	unsigned char hash[40];
@@ -114,6 +153,7 @@ SafeByteArray RtpClientAuthenticator::buildSecret(const SafeByteArray& text) con
 }
 
 boost::optional<SafeByteArray> RtpClientAuthenticator::getResponse() const {
+	SWIFT_LOG(info) << "use RTP-SECRET, build secret array" << std::endl;
 	SafeByteArray password = buildSecret(getPassword());
 	return concat(createSafeByteArray(getAuthorizationID()), createSafeByteArray('\0'), createSafeByteArray(getAuthenticationID()), createSafeByteArray('\0'), password);
 }

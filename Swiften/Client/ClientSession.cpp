@@ -288,7 +288,7 @@ void ClientSession::handleElement(std::shared_ptr<ToplevelElement> element) {
 			///hero 2017-05-02
 			else if (streamFeatures->hasAuthenticationMechanism("RTP-SECRET")) {
 				authenticator = new RtpClientAuthenticator(crypto, rtpSecretKey);
-				state = State::Authenticating;
+				state = State::WaitingForCredentials;
 				onNeedCredentials();
             }
             else if (streamFeatures->hasAuthenticationMechanism("SCRAM-SHA-1") || streamFeatures->hasAuthenticationMechanism("SCRAM-SHA-1-PLUS")) {

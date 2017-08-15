@@ -159,7 +159,10 @@ FullPayloadParserFactoryCollection::FullPayloadParserFactoryCollection() {
     factories_.push_back(std::make_shared<GenericPayloadParserFactory<JingleReasonParser> >("reason", "urn:xmpp:jingle:1"));
     factories_.push_back(std::make_shared<JingleContentPayloadParserFactory>(this));
     factories_.push_back(std::make_shared<GenericPayloadParserFactory<JingleIBBTransportMethodPayloadParser> >("transport", "urn:xmpp:jingle:transports:ibb:1"));
-    factories_.push_back(std::make_shared<GenericPayloadParserFactory<JingleS5BTransportMethodPayloadParser> >("transport", "urn:xmpp:jingle:transports:s5b:1"));
+//    factories_.push_back(std::make_shared<GenericPayloadParserFactory<JingleS5BTransportMethodPayloadParser> >("transport", "urn:xmpp:jingle:transports:s5b:1"));
+///heroyin change namespace to urn:xmpp:jingle:transports:s5b:2
+    factories_.push_back(std::make_shared<GenericPayloadParserFactory<JingleS5BTransportMethodPayloadParser> >("transport", "urn:xmpp:jingle:transports:s5b:2"));
+  
     factories_.push_back(std::make_shared<JingleFileTransferDescriptionParserFactory>(this));
     factories_.push_back(std::make_shared<GenericPayloadParserFactory<StreamInitiationFileInfoParser> >("file", "http://jabber.org/protocol/si/profile/file-transfer"));
     factories_.push_back(std::make_shared<GenericPayloadParserFactory<JingleFileTransferFileInfoParser> >("file", "urn:xmpp:jingle:apps:file-transfer:4"));

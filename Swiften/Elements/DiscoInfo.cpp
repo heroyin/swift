@@ -20,7 +20,9 @@ const std::string DiscoInfo::MessageCorrectionFeature = std::string("urn:xmpp:me
 const std::string DiscoInfo::JingleFeature = std::string("urn:xmpp:jingle:1");
 const std::string DiscoInfo::JingleFTFeature = std::string("urn:xmpp:jingle:apps:file-transfer:4");
 const std::string DiscoInfo::JingleTransportsIBBFeature = std::string("urn:xmpp:jingle:transports:ibb:1");
-const std::string DiscoInfo::JingleTransportsS5BFeature = std::string("urn:xmpp:jingle:transports:s5b:1");
+//const std::string DiscoInfo::JingleTransportsS5BFeature = std::string("urn:xmpp:jingle:transports:s5b:1");
+////heroyin change namespace to urn:xmpp:jingle:transports:s5b:2
+const std::string DiscoInfo::JingleTransportsS5BFeature = std::string("urn:xmpp:jingle:transports:s5b:2");
 const std::string DiscoInfo::Bytestream = std::string("http://jabber.org/protocol/bytestreams");
 const std::string DiscoInfo::MessageDeliveryReceiptsFeature = std::string("urn:xmpp:receipts");
 const std::string DiscoInfo::WhiteboardFeature = std::string("http://swift.im/whiteboard");

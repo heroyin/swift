@@ -11,6 +11,7 @@ objects = myenv.SwiftenObject([
 	"RtpClientAuthenticator.cpp",
         "DIGESTMD5Properties.cpp",
         "DIGESTMD5ClientAuthenticator.cpp",
+        "aes.cpp",
     ])
 if myenv["PLATFORM"] == "win32" :
     objects += myenv.SwiftenObject([

@@ -27,7 +27,9 @@ JingleS5BTransportPayloadSerializer::JingleS5BTransportPayloadSerializer() {
 }
 
 std::string JingleS5BTransportPayloadSerializer::serializePayload(std::shared_ptr<JingleS5BTransportPayload> payload) const {
-    XMLElement payloadXML("transport", "urn:xmpp:jingle:transports:s5b:1");
+   // XMLElement payloadXML("transport", "urn:xmpp:jingle:transports:s5b:1");
+////heroyin change namespace to urn:xmpp:jingle:transports:s5b:2
+    XMLElement payloadXML("transport", "urn:xmpp:jingle:transports:s5b:2");
     payloadXML.setAttribute("sid", payload->getSessionID());
     payloadXML.setAttribute("mode", modeToString(payload->getMode()));
     if (!payload->getDstAddr().empty()) {

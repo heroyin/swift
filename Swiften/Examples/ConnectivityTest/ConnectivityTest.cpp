@@ -78,15 +78,21 @@ int main(int argc, char* argv[]) {
     client->onConnected.connect(&handleConnected);
     errorConnection = client->onDisconnected.connect(&handleDisconnected);
     std::cout << "Connecting to JID " << jid << " with timeout " << timeout << "ms on host: "; ;
-    if (!connectHost.empty()) {
-        std::cout << connectHost << std::endl;
-        ClientOptions options;
-        options.manualHostname = connectHost;
-        client->connect(options);
-    } else {
-        std::cout << " Default" << std::endl;
-        client->connect();
-    }
+
+	std::cout << connectHost << std::endl;
+	ClientOptions options;
+	options.manualHostname = connectHost;
+	options.allowPLAINWithoutTLS = true;
+	options.useStreamCompression = false;
+		options.useTLS = ClientOptions::UseTLS::UseTLSWhenAvailable;
+//	options.useTLS = ClientOptions::UseTLS::NeverUseTLS;
+	options.proxyType = ClientOptions::NoProxy;
+
+	client->setAlwaysTrustCertificates();
+	client->setRtpSecretKey("RTP-SECRET-SEED");
+
+    client->connect(options);
+
 
     {
         Timer::ref timer = networkFactories.getTimerFactory()->createTimer(timeout);
