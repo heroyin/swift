@@ -1088,7 +1088,11 @@ void DateTime::gettimeofday(struct base::consts::timeval* tv) {
     tv->tv_usec = static_cast<long>(present % usecOffSet);
   }
 #else
-  ::gettimeofday(tv, nullptr);
+  timeval tv2;
+  tv2.tv_sec = tv->tv_sec;
+  tv2.tv_usec = tv->tv_usec;
+
+  ::gettimeofday(&tv2, nullptr);
 #endif  // ELPP_OS_WINDOWS
 }
 
