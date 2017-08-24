@@ -37,10 +37,31 @@ void IQRouter::handleIQ(std::shared_ptr<IQ> iq) {
     std::vector<std::shared_ptr<IQHandler> >::const_reverse_iterator i = handlers_.rbegin();
     std::vector<std::shared_ptr<IQHandler> >::const_reverse_iterator rend = handlers_.rend();
     for (; i != rend; ++i) {
+
+		///hero catch iq error
+		try{
+			handled |= (*i)->handleIQ(iq);
+		}
+		catch (std::exception& e){
+			SafeByteArray serialized = xmppSerializer_->serializeElement(iq);
+			SWIFT_LOG(error) << "handle IQ error: " << " handler: "  << e.what() << " " << safeByteArrayToString(serialized) << " " << std::endl;
+			throw;
+		}
+		catch (...){			
+			SafeByteArray serialized = xmppSerializer_->serializeElement(iq);
+			SWIFT_LOG(error) << "handle IQ error: " << " handler: " << safeByteArrayToString(serialized) << " " << std::endl;
+			throw;
+		}
+		if (handled) {
+			break;
+		}
+
+/*
         handled |= (*i)->handleIQ(iq);
         if (handled) {
             break;
         }
+		*/
     }
     if (!handled && (iq->getType() == IQ::Get || iq->getType() == IQ::Set) ) {
         sendIQ(IQ::createError(iq->getFrom(), iq->getID(), ErrorPayload::FeatureNotImplemented, ErrorPayload::Cancel));
