@@ -27,7 +27,9 @@ CoreComponent::CoreComponent(const JID& jid, const std::string& secret, NetworkF
     stanzaChannel_->onPresenceReceived.connect(boost::ref(onPresenceReceived));
     stanzaChannel_->onAvailableChanged.connect(boost::bind(&CoreComponent::handleStanzaChannelAvailableChanged, this, _1));
 
-    iqRouter_ = new IQRouter(stanzaChannel_);
+	///heroyin
+	iqRouter_ = new IQRouter(stanzaChannel_, new XMPPSerializer(getPayloadSerializers(), ClientStreamType, false));
+   /// iqRouter_ = new IQRouter(stanzaChannel_);
     iqRouter_->setFrom(jid);
 }
 

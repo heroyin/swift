@@ -40,7 +40,9 @@ CoreClient::CoreClient(const JID& jid, const SafeByteArray& password, NetworkFac
     stanzaChannel_->onStanzaAcked.connect(boost::bind(&CoreClient::handleStanzaAcked, this, _1));
     stanzaChannel_->onAvailableChanged.connect(boost::bind(&CoreClient::handleStanzaChannelAvailableChanged, this, _1));
 
-    iqRouter_ = new IQRouter(stanzaChannel_);
+///heroyin
+	iqRouter_ = new IQRouter(stanzaChannel_, new XMPPSerializer(getPayloadSerializers(), ClientStreamType, false));
+    ///iqRouter_ = new IQRouter(stanzaChannel_);
 
     iqRouter_->setJID(jid);
 }

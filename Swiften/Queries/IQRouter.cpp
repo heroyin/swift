@@ -12,12 +12,14 @@
 #include <Swiften/Elements/ErrorPayload.h>
 #include <Swiften/Queries/IQChannel.h>
 #include <Swiften/Queries/IQHandler.h>
+#include <Swiften/Base/Log.h>
 
 namespace Swift {
 
 static void noop(IQHandler*) {}
 
-IQRouter::IQRouter(IQChannel* channel) : channel_(channel), queueRemoves_(false) {
+///hero
+IQRouter::IQRouter(IQChannel* channel, XMPPSerializer* xmppSerializer) : channel_(channel), queueRemoves_(false), xmppSerializer_(xmppSerializer) {
     channel->onIQReceived.connect(boost::bind(&IQRouter::handleIQ, this, _1));
 }
 

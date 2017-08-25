@@ -13,13 +13,19 @@
 #include <Swiften/Base/API.h>
 #include <Swiften/Elements/IQ.h>
 
+#include <Swiften/Serializer/PayloadSerializer.h>
+#include <Swiften/Serializer/PayloadSerializers/FullPayloadSerializerCollection.h>
+#include <Swiften/Serializer/XMPPSerializer.h>
+
 namespace Swift {
     class IQChannel;
     class IQHandler;
 
     class SWIFTEN_API IQRouter {
         public:
-            IQRouter(IQChannel* channel);
+			///hero
+			IQRouter(IQChannel* channel, XMPPSerializer* xmppSerializer);
+///            IQRouter(IQChannel* channel);
             ~IQRouter();
 
             /**
@@ -85,5 +91,8 @@ namespace Swift {
             std::vector< std::shared_ptr<IQHandler> > handlers_;
             std::vector< std::shared_ptr<IQHandler> > queuedRemoves_;
             bool queueRemoves_;
+
+			///hero
+			XMPPSerializer* xmppSerializer_;
     };
 }
