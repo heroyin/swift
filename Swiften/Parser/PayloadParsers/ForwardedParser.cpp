@@ -26,7 +26,9 @@ void ForwardedParser::handleStartElement(const std::string& element, const std::
     if (level_ == PayloadLevel) {
         if (element == "iq" && ns == "jabber:client") { /* begin parsing a nested stanza? */
             childParser_ = std::dynamic_pointer_cast<StanzaParser>(std::make_shared<IQParser>(factories_));
-        } else if (element == "message" && ns == "jabber:client") {
+		///heroyin
+     	} else if (element == "message"/* && ns == "jabber:client"*/) {
+//        } else if (element == "message" && ns == "jabber:client") {
             childParser_ = std::dynamic_pointer_cast<StanzaParser>(std::make_shared<MessageParser>(factories_));
         } else if (element == "presence" && ns == "jabber:client") {
             childParser_ = std::dynamic_pointer_cast<StanzaParser>(std::make_shared<PresenceParser>(factories_));
