@@ -45,13 +45,11 @@ void IQRouter::handleIQ(std::shared_ptr<IQ> iq) {
 			handled |= (*i)->handleIQ(iq);
 		}
 		catch (std::exception& e){
-			SafeByteArray serialized = xmppSerializer_->serializeElement(iq);
-			SWIFT_LOG(error) << "handle IQ error: " << " handler: "  << e.what() << " " << safeByteArrayToString(serialized) << " " << std::endl;
+			SWIFT_LOG(error) << "handle IQ error: " << " handler: "  << e.what() << " " << iq->getID() << " " << std::endl;
 			throw;
 		}
 		catch (...){			
-			SafeByteArray serialized = xmppSerializer_->serializeElement(iq);
-			SWIFT_LOG(error) << "handle IQ error: " << " handler: " << safeByteArrayToString(serialized) << " " << std::endl;
+			SWIFT_LOG(error) << "handle IQ error: " << " handler: " << iq->getID() << " " << std::endl;
 			throw;
 		}
 		if (handled) {
