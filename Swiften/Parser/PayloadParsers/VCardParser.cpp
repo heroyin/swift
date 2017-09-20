@@ -93,7 +93,9 @@ void VCardParser::handleEndElement(const std::string& element, const std::string
     else if (elementHierarchy == "/vCard/PHOTO/BINVAL") {
         currentText_.erase(std::remove(currentText_.begin(), currentText_.end(), '\n'), currentText_.end());
         currentText_.erase(std::remove(currentText_.begin(), currentText_.end(), '\r'), currentText_.end());
-        getPayloadInternal()->setPhoto(Base64::decode(currentText_));
+        ///hero
+		getPayloadInternal()->setPhoto(currentText_);
+		///getPayloadInternal()->setPhoto(Base64::decode(currentText_));
     }
     else if (elementHierarchy == "/vCard/PHOTO") {
     }

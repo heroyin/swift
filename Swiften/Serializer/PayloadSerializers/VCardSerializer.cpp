@@ -86,7 +86,9 @@ std::string VCardSerializer::serializePayload(std::shared_ptr<VCard> vcard)  con
             photoElement->addNode(std::make_shared<XMLElement>("TYPE", "", vcard->getPhotoType()));
         }
         if (!vcard->getPhoto().empty()) {
-            photoElement->addNode(std::make_shared<XMLElement>("BINVAL", "", Base64::encode(vcard->getPhoto())));
+            ///hero
+			photoElement->addNode(std::make_shared<XMLElement>("BINVAL", "", vcard->getPhoto()));
+			///photoElement->addNode(boost::make_shared<XMLElement>("BINVAL", "", Base64::encode(vcard->getPhoto())));
 ///hero lx
 		if (!vcard->getPhotoHash().empty()) {
 			photoElement->addNode(std::make_shared<XMLElement>("HASH", "", vcard->getPhotoHash())); 

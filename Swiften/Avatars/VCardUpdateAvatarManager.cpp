@@ -54,10 +54,14 @@ void VCardUpdateAvatarManager::handleVCardChanged(const JID& from, VCard::ref vC
         setAvatarHash(from, "");
     }
     else {
-        std::string hash = Hexify::hexify(crypto_->getSHA1Hash(vCard->getPhoto()));
-        if (!avatarStorage_->hasAvatar(hash)) {
-            avatarStorage_->addAvatar(hash, vCard->getPhoto());
-        }
+       ///heroyin
+		std::string hash = Hexify::hexify(crypto_->getSHA1Hash(vCard->getPhotoByteArray()));
+		//std::string hash = Hexify::hexify(crypto_->getSHA1Hash(vCard->getPhoto()));
+		if (!avatarStorage_->hasAvatar(hash)) {
+			///heroyin
+			avatarStorage_->addAvatar(hash, vCard->getPhotoByteArray());
+//			avatarStorage_->addAvatar(hash, vCard->getPhoto());
+		}
         setAvatarHash(from, hash);
     }
 }

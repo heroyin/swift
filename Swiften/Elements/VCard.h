@@ -13,6 +13,8 @@
 
 #include <Swiften/Base/API.h>
 #include <Swiften/Base/ByteArray.h>
+///heroyin
+#include <Swiften/StringCodecs/Base64.h>
 #include <Swiften/Elements/Payload.h>
 #include <Swiften/JID/JID.h>
 
@@ -128,8 +130,19 @@ namespace Swift {
             void setNickname(const std::string& nick) { nick_ = nick; }
             const std::string& getNickname() const { return nick_; }
 
-            void setPhoto(const ByteArray& photo) { photo_ = photo; }
-            const ByteArray& getPhoto() const { return photo_; }
+			///hero
+			void setPhoto(const std::string& photo) { photo_ = photo; }
+			void setPhotoByteArray(const ByteArray& photo) { photo_ = Base64::encode(photo); }
+			const std::string& getPhoto() const { return photo_; }
+			const ByteArray& getPhotoByteArray() {
+				if (photoByteArray_.empty() && !photo_.empty()){
+					photoByteArray_ = Base64::decode(photo_);
+				}
+
+				return photoByteArray_; 
+			}
+            //void setPhoto(const ByteArray& photo) { photo_ = photo; }
+            //const ByteArray& getPhoto() const { return photo_; }
 
             void setPhotoType(const std::string& photoType) { photoType_ = photoType; }
             const std::string& getPhotoType() const { return photoType_; }
@@ -317,7 +330,10 @@ void setOrgGroup(const std::string group)
             std::string prefix_;
             std::string suffix_;
             //std::string email_;
-            ByteArray photo_;
+          ///heroyin
+			std::string photo_;
+			ByteArray photoByteArray_;
+			///ByteArray photo_;
             std::string photoType_;
             std::string nick_;
 ///heroyin lx 
