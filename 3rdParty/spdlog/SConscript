@@ -1,0 +1,7 @@
+Import(["env", "conf_env"])
+
+if env["SCONS_STAGE"] == "flags" :
+	env["SPDLOG_FLAGS"] = {
+		"CPPPATH": [Dir(".")],
+	}
+
