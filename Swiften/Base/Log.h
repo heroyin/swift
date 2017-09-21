@@ -29,6 +29,9 @@ namespace Swift {
 
 			///heroyin
 			static void initLogger(std::string logFile);
+			///heroyin
+			static void uninitLogger();
+
 			static Severity getLogLevel();
 			static void setLogLevel(Severity level);
 

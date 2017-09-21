@@ -16,10 +16,8 @@
 #include <windows.h>
 #endif
 
-#include <easylogging++.h>
+#include "spdlog/spdlog.h"
 
-
-INITIALIZE_EASYLOGGINGPP
 
 namespace Swift {
 
@@ -39,15 +37,20 @@ Log::~Log() {
 #endif	
 
 	if(_severity==Severity::error)
-		LOG(ERROR) << stream.str();
+		spdlog::get("rylogger")->error(stream.str());
+		//LOG(ERROR) << stream.str();
 	else if(_severity==Severity::warning)
-		LOG(WARNING) << stream.str();
+		spdlog::get("rylogger")->warn(stream.str());
+		//LOG(WARNING) << stream.str();
 	else if(_severity==Severity::info)
-		LOG(INFO) << stream.str();
+		spdlog::get("rylogger")->info(stream.str());
+//		LOG(INFO) << stream.str();
 	else if(_severity==Severity::debug)
-		LOG(DEBUG) << stream.str();
+		spdlog::get("rylogger")->debug(stream.str());
+		//		LOG(DEBUG) << stream.str();
 	else 
-		LOG(DEBUG) << stream.str();
+		spdlog::get("rylogger")->debug(stream.str());
+		//		LOG(DEBUG) << stream.str();
 
 }
 
@@ -72,25 +75,26 @@ std::ostringstream& Log::getStream(
 
 void Log::initLogger(std::string logFile) {
 
-	el::Configurations* configurations = NULL;
+		try
+	{
+		std::vector<spdlog::sink_ptr> sinks;
+		sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+		sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logFile, 1024*1024*6, 5));
+		auto combined_logger = std::make_shared<spdlog::logger>("rylogger", begin(sinks), end(sinks));
+		spdlog::register_logger(combined_logger);
 
-	std::string confFile = "xmpplib.conf";
-	if(boost::filesystem::exists(confFile)) {
-		configurations = new el::Configurations(confFile);
+		spdlog::set_async_mode(4096);
 	}
-	else {
-		configurations = new el::Configurations();
-		configurations->setToDefault();
-		configurations->set(el::Level::Global, 
-			el::ConfigurationType::Format,  "%datetime [%level] %msg");
+	catch (const spdlog::spdlog_ex& ex)
+	{
+		std::cout << "Log initialization failed: " << ex.what() << std::endl;
 	}
 
-	configurations->set(el::Level::Global, 
-		el::ConfigurationType::Filename,  logFile);
-	el::Loggers::reconfigureAllLoggers(*configurations);
+}
 
-	delete configurations;
-	el::Loggers::addFlag(el::LoggingFlag::StrictLogFileSizeCheck);
+void Log::uninitLogger() {
+	spdlog::get("rylogger")->flush();
+	spdlog::drop_all();
 }
 
 Log::Severity Log::getLogLevel() {
