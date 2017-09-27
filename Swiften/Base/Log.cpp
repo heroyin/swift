@@ -83,6 +83,7 @@ void Log::initLogger(std::string logFile) {
 		auto combined_logger = std::make_shared<spdlog::logger>("rylogger", begin(sinks), end(sinks));
 		spdlog::register_logger(combined_logger);
 
+		spdlog::set_level(spdlog::level::debug);
 		spdlog::set_async_mode(4096);
 	}
 	catch (const spdlog::spdlog_ex& ex)
