@@ -127,7 +127,6 @@ void BoostConnection::doRead() {
 }
 
 void BoostConnection::handleSocketRead(const boost::system::error_code& error, size_t bytesTransferred) {
-    SWIFT_LOG(debug) << "Socket read " << error << std::endl;
     if (!error) {
         readBuffer_->resize(bytesTransferred);
         eventLoop->postEvent(boost::bind(boost::ref(onDataRead), readBuffer_), shared_from_this());
@@ -137,12 +136,13 @@ void BoostConnection::handleSocketRead(const boost::system::error_code& error, s
         eventLoop->postEvent(boost::bind(boost::ref(onDisconnected), boost::optional<Error>()), shared_from_this());
     }
     else {
+		///hero
+	    SWIFT_LOG(debug) << "Socket read " << error << std::endl;
         eventLoop->postEvent(boost::bind(boost::ref(onDisconnected), ReadError), shared_from_this());
     }
 }
 
 void BoostConnection::handleDataWritten(const boost::system::error_code& error) {
-    SWIFT_LOG(debug) << "Data written " << error << std::endl;
     if (!error) {
         eventLoop->postEvent(boost::ref(onDataWritten), shared_from_this());
     }
@@ -150,6 +150,8 @@ void BoostConnection::handleDataWritten(const boost::system::error_code& error) 
         eventLoop->postEvent(boost::bind(boost::ref(onDisconnected), boost::optional<Error>()), shared_from_this());
     }
     else {
+		///hero
+	    SWIFT_LOG(debug) << "Data written " << error << std::endl;
         eventLoop->postEvent(boost::bind(boost::ref(onDisconnected), WriteError), shared_from_this());
     }
     {

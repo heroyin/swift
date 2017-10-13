@@ -36,14 +36,7 @@ std::string Request::send() {
     id_ = router_->getNewIQID();
     iq->setID(id_);
 
-    try {
-        router_->addHandler(shared_from_this());
-    }
-    catch (const std::exception&) {
-        ///heroyin
-	SWIFT_LOG(error) << "addHandler by shared_from_this failed ";
-        router_->addHandler(this);
-    }
+    router_->addHandler(shared_from_this());
 
     router_->sendIQ(iq);
     return id_;

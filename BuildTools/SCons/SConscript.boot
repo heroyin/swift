@@ -279,7 +279,15 @@ if env["debug"] :
     else :
         env.Append(CCFLAGS = ["-g"])
 elif env["PLATFORM"] == "win32" :
-    env.Append(CCFLAGS = ["/MD"])
+    env.Append(CCFLAGS = ["/MD", "/Zi", "/Od", "/GS"])
+    # heroyin
+    env.Append(LINKFLAGS = ["/DEBUG"])
+    if GetOption("num_jobs") > 1 :
+            env["CCPDBFLAGS"] = '/Fd${TARGET}.pdb'
+            env["PDB"] = '${TARGET.base}.pdb'
+    if env["set_iterator_debug_level"] :
+        env.Append(CPPDEFINES = ["_ITERATOR_DEBUG_LEVEL=0"])
+    env.Append(LINKFLAGS = ["/OPT:REF"])
 
 if env.get("universal", 0) :
     assert(env["PLATFORM"] == "darwin")
