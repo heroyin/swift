@@ -37,19 +37,19 @@ Log::~Log() {
 #endif	
 
 	if(_severity==Severity::error)
-		spdlog::get("rylogger")->error(stream.str());
+		spdlog::get("xmpp")->error(stream.str());
 		//LOG(ERROR) << stream.str();
 	else if(_severity==Severity::warning)
-		spdlog::get("rylogger")->warn(stream.str());
+		spdlog::get("xmpp")->warn(stream.str());
 		//LOG(WARNING) << stream.str();
 	else if(_severity==Severity::info)
-		spdlog::get("rylogger")->info(stream.str());
+		spdlog::get("xmpp")->info(stream.str());
 //		LOG(INFO) << stream.str();
 	else if(_severity==Severity::debug)
-		spdlog::get("rylogger")->debug(stream.str());
+		spdlog::get("xmpp")->debug(stream.str());
 		//		LOG(DEBUG) << stream.str();
 	else 
-		spdlog::get("rylogger")->debug(stream.str());
+		spdlog::get("xmpp")->debug(stream.str());
 		//		LOG(DEBUG) << stream.str();
 
 }
@@ -73,14 +73,40 @@ std::ostringstream& Log::getStream(
 //	return writer;
 }
 
+class my_sink : public spdlog::sinks::sink
+{
+    void log(const spdlog::details::log_msg& msg) override
+    {
+        // Your code here.
+        // details::log_msg is a struct containing the log entry info like level, timestamp, thread id etc.
+        // msg.formatted contains the formatted log.
+        // msg.raw contains pre formatted log
+#ifdef Q_OS_WIN32
+        OutputDebugStringA(msg.formatted.data());
+#else
+        fwrite(msg.formatted.data(), sizeof(char), msg.formatted.size(), stdout);
+        flush();
+#endif
+    }
+
+    void flush()
+    {
+#ifndef Q_OS_WIN32
+        fflush(stdout);
+#endif
+    }
+
+};
+
 void Log::initLogger(std::string logFile) {
 
 		try
 	{
 		std::vector<spdlog::sink_ptr> sinks;
-		sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+		//sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+		sinks.push_back(std::make_shared<my_sink>());
 		sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logFile, 1024*1024*6, 5));
-		auto combined_logger = std::make_shared<spdlog::logger>("rylogger", begin(sinks), end(sinks));
+		auto combined_logger = std::make_shared<spdlog::logger>("xmpp", begin(sinks), end(sinks));
 		spdlog::register_logger(combined_logger);
 
 		spdlog::set_level(spdlog::level::debug);
@@ -94,7 +120,7 @@ void Log::initLogger(std::string logFile) {
 }
 
 void Log::uninitLogger() {
-	spdlog::get("rylogger")->flush();
+	spdlog::get("xmpp")->flush();
 	spdlog::drop_all();
 }
 
