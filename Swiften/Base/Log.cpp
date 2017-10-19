@@ -81,7 +81,7 @@ class my_sink : public spdlog::sinks::sink
         // details::log_msg is a struct containing the log entry info like level, timestamp, thread id etc.
         // msg.formatted contains the formatted log.
         // msg.raw contains pre formatted log
-#ifdef Q_OS_WIN32
+#ifdef SWIFTEN_PLATFORM_WINDOWS
         OutputDebugStringA(msg.formatted.data());
 #else
         fwrite(msg.formatted.data(), sizeof(char), msg.formatted.size(), stdout);
@@ -91,7 +91,7 @@ class my_sink : public spdlog::sinks::sink
 
     void flush()
     {
-#ifndef Q_OS_WIN32
+#ifndef SWIFTEN_PLATFORM_WINDOWS
         fflush(stdout);
 #endif
     }
