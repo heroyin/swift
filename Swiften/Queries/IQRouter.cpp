@@ -82,6 +82,8 @@ void IQRouter::processPendingRemoves() {
 }
 
 void IQRouter::addHandler(IQHandler* handler) {
+	//hero
+	assert(handler);
     addHandler(std::shared_ptr<IQHandler>(handler, noop));
 }
 
@@ -90,6 +92,8 @@ void IQRouter::removeHandler(IQHandler* handler) {
 }
 
 void IQRouter::addHandler(std::shared_ptr<IQHandler> handler) {
+	///hero
+    assert(handler);
     handlers_.push_back(handler);
 }
 
