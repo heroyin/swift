@@ -44,7 +44,10 @@ void IQRouter::handleIQ(std::shared_ptr<IQ> iq) {
 		try{
 			///hero
 			std::shared_ptr<IQHandler> handler = *i;
-			handled |= handler->handleIQ(iq);
+			if (handler)
+				handled |= handler->handleIQ(iq);
+			else
+				queuedRemoves_.push_back(handler);
 		}
 		catch (std::exception& e){
 			SWIFT_LOG(error) << "handle IQ error: " << " handler: "  << e.what() << " " << iq->getID() << " " << std::endl;
