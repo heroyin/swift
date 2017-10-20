@@ -56,6 +56,7 @@ void XMPPLayer::writeFooter() {
 
 void XMPPLayer::writeElement(std::shared_ptr<ToplevelElement> element) {
 	///hero
+	std::unique_lock<std::mutex> lock(elmentsMutex_);
 	elements_.push_back(element);
 
     ///writeDataInternal(xmppSerializer_->serializeElement(element));
@@ -63,17 +64,22 @@ void XMPPLayer::writeElement(std::shared_ptr<ToplevelElement> element) {
 
 void XMPPLayer::writeData(const std::string& data) {
 	///hero
+	std::unique_lock<std::mutex> lock(elmentsMutex_);
 	strings_.push_back(data);
     ///writeDataInternal(createSafeByteArray(data));
 }
 
 ///hero
 void XMPPLayer::doWriteElement() {
+	std::unique_lock<std::mutex> lock(elmentsMutex_, std::defer_lock);
+
 	while (!stopThread_){
 
 		if (elements_.empty() && strings_.empty())
 			sleep(1);
 		else {
+			
+			lock.lock();
 			while (!elements_.empty()){
 				std::shared_ptr<ToplevelElement> element = elements_.back();
 				elements_.pop_back();
@@ -85,6 +91,7 @@ void XMPPLayer::doWriteElement() {
 				strings_.pop_back();
 				writeDataInternal(createSafeByteArray(str));
 			}
+			lock.unlock();
 		}
 
 

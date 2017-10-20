@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <thread>
+#include <mutex>
 
 #include <boost/noncopyable.hpp>
 #include <boost/signals2.hpp>
@@ -82,5 +83,6 @@ namespace Swift {
 			std::vector<std::string> strings_;
 			std::thread* writeThread_;
 			bool stopThread_;
+			std::mutex elmentsMutex_;
     };
 }
