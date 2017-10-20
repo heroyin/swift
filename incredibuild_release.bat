@@ -20,5 +20,4 @@ XGConsole /command="scons -u -j16 swiften" /openmonitor /profile="incredibuild.x
 
 copy %cd%\swiften\swiften.lib %cd%\swiften_release.lib 
 copy %cd%\3rdParty\Boost\Swiften_Boost.lib %cd%\3rdParty\Boost\Swiften_Boost_release.lib
-copy %cd%\3rdParty\EasyLogging\EasyLogging.lib %cd%\EasyLogging_release.lib
 
