@@ -18,8 +18,7 @@ namespace Swift {
 
 static void noop(IQHandler*) {}
 
-///hero
-IQRouter::IQRouter(IQChannel* channel, XMPPSerializer* xmppSerializer) : channel_(channel), queueRemoves_(false), xmppSerializer_(xmppSerializer) {
+IQRouter::IQRouter(IQChannel* channel) : channel_(channel), queueRemoves_(false){
     channel->onIQReceived.connect(boost::bind(&IQRouter::handleIQ, this, _1));
 }
 

@@ -28,8 +28,10 @@ namespace Swift {
     class TimerFactory;
     class Timer;
 
-    class SWIFTEN_API ClientSession : public std::enable_shared_from_this<ClientSession> {
-        public:
+	//class SWIFTEN_API ClientSession : public std::enable_shared_from_this<ClientSession> {
+	///hero
+	class SWIFTEN_API ClientSession {
+		public:
             enum class State {
                 Initial,
                 WaitingForStreamStart,

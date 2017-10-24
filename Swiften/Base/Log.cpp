@@ -103,8 +103,9 @@ void Log::initLogger(std::string logFile) {
 		try
 	{
 		std::vector<spdlog::sink_ptr> sinks;
-		//sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
-		sinks.push_back(std::make_shared<my_sink>());
+		sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+		///OutputDebugStringA 可能越界，msg.formatted.data()返回的字符串可能不是 #0结尾
+		//sinks.push_back(std::make_shared<my_sink>());
 		sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logFile, 1024*1024*6, 5));
 		auto combined_logger = std::make_shared<spdlog::logger>("xmpp", begin(sinks), end(sinks));
 		spdlog::register_logger(combined_logger);

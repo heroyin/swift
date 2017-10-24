@@ -104,13 +104,21 @@ ClientSession::~ClientSession() {
 }
 
 void ClientSession::start() {
-    stream->onStreamStartReceived.connect(boost::bind(&ClientSession::handleStreamStart, shared_from_this(), _1));
+	/*
+	stream->onStreamStartReceived.connect(boost::bind(&ClientSession::handleStreamStart, shared_from_this(), _1));
     stream->onStreamEndReceived.connect(boost::bind(&ClientSession::handleStreamEnd, shared_from_this()));
     stream->onElementReceived.connect(boost::bind(&ClientSession::handleElement, shared_from_this(), _1));
     stream->onClosed.connect(boost::bind(&ClientSession::handleStreamClosed, shared_from_this(), _1));
     stream->onTLSEncrypted.connect(boost::bind(&ClientSession::handleTLSEncrypted, shared_from_this()));
-
-    assert(state == State::Initial);
+	*/
+	///hero
+	stream->onStreamStartReceived.connect(boost::bind(&ClientSession::handleStreamStart, this, _1));
+	stream->onStreamEndReceived.connect(boost::bind(&ClientSession::handleStreamEnd, this));
+	stream->onElementReceived.connect(boost::bind(&ClientSession::handleElement, this, _1));
+	stream->onClosed.connect(boost::bind(&ClientSession::handleStreamClosed, this, _1));
+	stream->onTLSEncrypted.connect(boost::bind(&ClientSession::handleTLSEncrypted, this));
+	
+	assert(state == State::Initial);
     state = State::WaitingForStreamStart;
     sendStreamHeader();
 }
@@ -353,11 +361,16 @@ void ClientSession::handleElement(std::shared_ptr<ToplevelElement> element) {
     }
     else if (std::dynamic_pointer_cast<StreamManagementEnabled>(element)) {
         stanzaAckRequester_ = std::make_shared<StanzaAckRequester>();
-        stanzaAckRequester_->onRequestAck.connect(boost::bind(&ClientSession::requestAck, shared_from_this()));
-        stanzaAckRequester_->onStanzaAcked.connect(boost::bind(&ClientSession::handleStanzaAcked, shared_from_this(), _1));
-        stanzaAckResponder_ = std::make_shared<StanzaAckResponder>();
-        stanzaAckResponder_->onAck.connect(boost::bind(&ClientSession::ack, shared_from_this(), _1));
-        needAcking = false;
+		//stanzaAckRequester_->onRequestAck.connect(boost::bind(&ClientSession::requestAck, shared_from_this()));
+		//stanzaAckRequester_->onStanzaAcked.connect(boost::bind(&ClientSession::handleStanzaAcked, shared_from_this(), _1));
+		///hero
+		stanzaAckRequester_->onRequestAck.connect(boost::bind(&ClientSession::requestAck, this));
+		stanzaAckRequester_->onStanzaAcked.connect(boost::bind(&ClientSession::handleStanzaAcked, this, _1));
+		stanzaAckResponder_ = std::make_shared<StanzaAckResponder>();
+		///hero
+		stanzaAckResponder_->onAck.connect(boost::bind(&ClientSession::ack, this, _1));
+		//stanzaAckResponder_->onAck.connect(boost::bind(&ClientSession::ack, shared_from_this(), _1));
+		needAcking = false;
         continueSessionInitialization();
     }
     else if (std::dynamic_pointer_cast<StreamManagementFailed>(element)) {
@@ -490,8 +503,10 @@ void ClientSession::checkTrustOrFinish(const std::vector<Certificate::ref>& cert
 void ClientSession::initiateShutdown(bool sendFooter) {
     if (!streamShutdownTimeout) {
         streamShutdownTimeout = timerFactory->createTimer(sessionShutdownTimeoutInMilliseconds);
-        streamShutdownTimeout->onTick.connect(boost::bind(&ClientSession::handleStreamShutdownTimeout, shared_from_this()));
-        streamShutdownTimeout->start();
+		//streamShutdownTimeout->onTick.connect(boost::bind(&ClientSession::handleStreamShutdownTimeout, shared_from_this()));
+		///hero
+		streamShutdownTimeout->onTick.connect(boost::bind(&ClientSession::handleStreamShutdownTimeout, this));
+		streamShutdownTimeout->start();
     }
     if (sendFooter) {
         stream->writeFooter();
@@ -523,22 +538,34 @@ void ClientSession::handleStreamClosed(std::shared_ptr<Swift::Error> streamError
     }
 
     if (stanzaAckRequester_) {
-        stanzaAckRequester_->onRequestAck.disconnect(boost::bind(&ClientSession::requestAck, shared_from_this()));
-        stanzaAckRequester_->onStanzaAcked.disconnect(boost::bind(&ClientSession::handleStanzaAcked, shared_from_this(), _1));
-        stanzaAckRequester_.reset();
+		//stanzaAckRequester_->onRequestAck.disconnect(boost::bind(&ClientSession::requestAck, shared_from_this()));
+		//stanzaAckRequester_->onStanzaAcked.disconnect(boost::bind(&ClientSession::handleStanzaAcked, shared_from_this(), _1));
+		///hero
+		stanzaAckRequester_->onRequestAck.disconnect(boost::bind(&ClientSession::requestAck, this));
+		stanzaAckRequester_->onStanzaAcked.disconnect(boost::bind(&ClientSession::handleStanzaAcked, this, _1));
+		stanzaAckRequester_.reset();
     }
     if (stanzaAckResponder_) {
-        stanzaAckResponder_->onAck.disconnect(boost::bind(&ClientSession::ack, shared_from_this(), _1));
+        ///stanzaAckResponder_->onAck.disconnect(boost::bind(&ClientSession::ack, shared_from_this(), _1));
+		///hero		
+		stanzaAckResponder_->onAck.disconnect(boost::bind(&ClientSession::ack, this, _1));
         stanzaAckResponder_.reset();
     }
     stream->setWhitespacePingEnabled(false);
+	/*
     stream->onStreamStartReceived.disconnect(boost::bind(&ClientSession::handleStreamStart, shared_from_this(), _1));
     stream->onStreamEndReceived.disconnect(boost::bind(&ClientSession::handleStreamEnd, shared_from_this()));
     stream->onElementReceived.disconnect(boost::bind(&ClientSession::handleElement, shared_from_this(), _1));
     stream->onClosed.disconnect(boost::bind(&ClientSession::handleStreamClosed, shared_from_this(), _1));
     stream->onTLSEncrypted.disconnect(boost::bind(&ClientSession::handleTLSEncrypted, shared_from_this()));
-
-    if (previousState == State::Finishing) {
+	*/
+	///hero
+	stream->onStreamStartReceived.disconnect(boost::bind(&ClientSession::handleStreamStart, this, _1));
+	stream->onStreamEndReceived.disconnect(boost::bind(&ClientSession::handleStreamEnd, this));
+	stream->onElementReceived.disconnect(boost::bind(&ClientSession::handleElement, this, _1));
+	stream->onClosed.disconnect(boost::bind(&ClientSession::handleStreamClosed, this, _1));
+	stream->onTLSEncrypted.disconnect(boost::bind(&ClientSession::handleTLSEncrypted, this));
+	if (previousState == State::Finishing) {
         onFinished(error_);
     }
     else {
