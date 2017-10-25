@@ -44,6 +44,8 @@ namespace Swift {
             boost::signals2::signal<void (std::shared_ptr<TLSError>)> onError;
             boost::signals2::signal<void ()> onConnected;
 
+			///hero
+			boost::signals2::signal<void(const SafeByteArray& data)> onWriteData;
         private:
             TLSContext* context;
     };

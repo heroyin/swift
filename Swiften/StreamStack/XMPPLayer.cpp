@@ -10,9 +10,6 @@
 #include <Swiften/Parser/XMPPParser.h>
 #include <Swiften/Serializer/XMPPSerializer.h>
 
-///hero
-#include <Swiften/Base/sleep.h>
-
 namespace Swift {
 
 XMPPLayer::XMPPLayer(
@@ -21,8 +18,6 @@ XMPPLayer::XMPPLayer(
         XMLParserFactory* xmlParserFactory,
         StreamType streamType,
         bool setExplictNSonTopLevelElements) :
-		///hero
-			stopThread_(false),
             payloadParserFactories_(payloadParserFactories),
             payloadSerializers_(payloadSerializers),
             xmlParserFactory_(xmlParserFactory),
@@ -31,19 +26,11 @@ XMPPLayer::XMPPLayer(
             inParser_(false) {
     xmppParser_ = new XMPPParser(this, payloadParserFactories_, xmlParserFactory);
     xmppSerializer_ = new XMPPSerializer(payloadSerializers_, streamType, setExplictNSonTopLevelElements);
-
-	///hero
-	writeThread_ = new std::thread(boost::bind(&XMPPLayer::doWriteElement, this));
 }
 
 XMPPLayer::~XMPPLayer() {
     delete xmppSerializer_;
     delete xmppParser_;
-
-	///hero
-	stopThread_ = true;
-	writeThread_->join();
-	delete writeThread_;
 }
 
 void XMPPLayer::writeHeader(const ProtocolHeader& header) {
@@ -55,47 +42,11 @@ void XMPPLayer::writeFooter() {
 }
 
 void XMPPLayer::writeElement(std::shared_ptr<ToplevelElement> element) {
-	///hero
-	std::unique_lock<std::mutex> lock(elmentsMutex_);
-	elements_.push_back(element);
-
-    ///writeDataInternal(xmppSerializer_->serializeElement(element));
+    writeDataInternal(xmppSerializer_->serializeElement(element));
 }
 
 void XMPPLayer::writeData(const std::string& data) {
-	///hero
-	std::unique_lock<std::mutex> lock(elmentsMutex_);
-	strings_.push_back(data);
-    ///writeDataInternal(createSafeByteArray(data));
-}
-
-///hero
-void XMPPLayer::doWriteElement() {
-	std::unique_lock<std::mutex> lock(elmentsMutex_, std::defer_lock);
-
-	while (!stopThread_){
-
-		if (elements_.empty() && strings_.empty())
-			sleep(1);
-		else {
-			
-			lock.lock();
-			while (!elements_.empty()){
-				std::shared_ptr<ToplevelElement> element = elements_.back();
-				elements_.pop_back();
-				writeDataInternal(xmppSerializer_->serializeElement(element));
-			}
-
-			while (!strings_.empty()){
-				std::string str = strings_.back();
-				strings_.pop_back();
-				writeDataInternal(createSafeByteArray(str));
-			}
-			lock.unlock();
-		}
-
-
-	}
+    writeDataInternal(createSafeByteArray(data));
 }
 
 void XMPPLayer::writeDataInternal(const SafeByteArray& data) {

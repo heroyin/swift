@@ -7,8 +7,6 @@
 #pragma once
 
 #include <memory>
-#include <thread>
-#include <mutex>
 
 #include <boost/noncopyable.hpp>
 #include <boost/signals2.hpp>
@@ -66,8 +64,6 @@ namespace Swift {
 
             void doResetParser();
 
-			///hero
-			void doWriteElement();
         private:
             PayloadParserFactoryCollection* payloadParserFactories_;
             XMPPParser* xmppParser_;
@@ -77,12 +73,5 @@ namespace Swift {
             bool setExplictNSonTopLevelElements_;
             bool resetParserAfterParse_;
             bool inParser_;
-
-			//hero
-			std::vector<std::shared_ptr<ToplevelElement>> elements_;
-			std::vector<std::string> strings_;
-			std::thread* writeThread_;
-			bool stopThread_;
-			std::mutex elmentsMutex_;
     };
 }
