@@ -19,13 +19,9 @@ TLSLayer::TLSLayer(TLSContextFactory* factory, const TLSOptions& tlsOptions) {
     context->onDataForApplication.connect(boost::bind(&TLSLayer::writeDataToParentLayer, this, _1));
     context->onConnected.connect(onConnected);
     context->onError.connect(onError);
-	///hero
-	onWriteData.connect(boost::bind(&TLSContext::handleDataFromApplication, context, _1));
 }
 
 TLSLayer::~TLSLayer() {
-	///hero
-	onWriteData.disconnect(boost::bind(&TLSContext::handleDataFromApplication, context, _1));
 
     delete context;
 }
@@ -35,9 +31,7 @@ void TLSLayer::connect() {
 }
 
 void TLSLayer::writeData(const SafeByteArray& data) {
-	///hero
-	onWriteData(data);
-    //context->handleDataFromApplication(data);
+    context->handleDataFromApplication(data);
 }
 
 void TLSLayer::handleDataRead(const SafeByteArray& data) {
