@@ -307,6 +307,10 @@ void SecureTransportContext::handleDataFromNetwork(const SafeByteArray& data) {
     SWIFT_LOG(debug) << std::endl;
     SWIFT_LOG_ASSERT(state_ == HandshakeDone || state_ == Handshake, error) << "current state '" << stateToString(state_) << " invalid." << std::endl;
 
+	///hero
+	std::lock_guard<std::recursive_mutex> lock(contextMutex_);
+
+	
     append(readingBuffer_, data);
 
     size_t bytesRead = 0;
@@ -354,6 +358,10 @@ void SecureTransportContext::handleDataFromNetwork(const SafeByteArray& data) {
 
 
 void SecureTransportContext::handleDataFromApplication(const SafeByteArray& data) {
+	///hero
+	std::lock_guard<std::recursive_mutex> lock(contextMutex_);
+
+	
     size_t processedBytes = 0;
     OSStatus error = SSLWrite(sslContext_.get(), data.data(), data.size(), &processedBytes);
     switch(error) {

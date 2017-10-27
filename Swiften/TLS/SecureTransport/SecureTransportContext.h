@@ -10,6 +10,9 @@
 
 #include <Swiften/TLS/TLSContext.h>
 
+///hero
+#include <mutex>
+
 namespace Swift {
 
 class SecureTransportContext : public TLSContext {
@@ -53,6 +56,8 @@ class SecureTransportContext : public TLSContext {
         CertificateVerificationError::ref verificationError_;
         CertificateWithKey::ref clientCertificate_;
         bool checkCertificateRevocation_;
+		///hero
+		std::recursive_mutex contextMutex_;
 };
 
 }
