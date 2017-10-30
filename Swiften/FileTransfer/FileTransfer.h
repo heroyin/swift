@@ -72,9 +72,9 @@ namespace Swift {
             }
 
             ///heroyin
-	    const std::string& getMideaType() const {
-		return mideaType;
-	    }  
+			const std::string& getMideaType() const {
+				return mideaType_;
+			}  
 
         public:
             boost::signals2::signal<void (size_t /* proccessedBytes */)> onProcessedBytes;
@@ -83,7 +83,9 @@ namespace Swift {
 
         protected:
             void setState(const State& state);
-            void setFileInfo(const std::string& name, boost::uintmax_t size, const std::string& description);
+///            void setFileInfo(const std::string& name, boost::uintmax_t size, const std::string& description);
+///hero
+            void setFileInfo(const std::string& name, boost::uintmax_t size, const std::string& description, const std::string& mediaType);
 
         private:
             boost::uintmax_t fileSizeInBytes_;
@@ -91,6 +93,6 @@ namespace Swift {
             std::string description_;
             State state_;
             ///heroyin
-            std::string mideaType;
+            std::string mideaType_;
     };
 }

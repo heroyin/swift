@@ -19,10 +19,12 @@ void FileTransfer::setState(const State& state) {
     onStateChanged(state);
 }
 
-void FileTransfer::setFileInfo(const std::string& name, boost::uintmax_t size, const std::string& description) {
+///void FileTransfer::setFileInfo(const std::string& name, boost::uintmax_t size, const std::string& description) {
+///hero
+void FileTransfer::setFileInfo(const std::string& name, boost::uintmax_t size, const std::string& description, const std::string& mediaType) {
     filename_ = name;
     fileSizeInBytes_ = size;
     description_ = description;
     ///heroyin
-    this->mideaType = mideaType;
+    mideaType_ = mediaType;
 }

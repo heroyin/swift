@@ -62,7 +62,8 @@ OutgoingJingleFileTransfer::OutgoingJingleFileTransfer(
             state(Initial),
             candidateAcknowledged(false) {
 
-    setFileInfo(fileInfo.getName(), fileInfo.getSize(), fileInfo.getDescription());
+	///hero
+    setFileInfo(fileInfo.getName(), fileInfo.getSize(), fileInfo.getDescription(), fileInfo.getMediaType());
 
     // calculate both, MD5 and SHA-1 since we don't know which one the other side supports
     hashCalculator = new IncrementalBytestreamHashCalculator(true, true, crypto);

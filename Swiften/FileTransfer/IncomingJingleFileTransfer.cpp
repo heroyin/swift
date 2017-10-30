@@ -47,7 +47,8 @@ IncomingJingleFileTransfer::IncomingJingleFileTransfer(
     description = initialContent->getDescription<JingleFileTransferDescription>();
     assert(description);
     JingleFileTransferFileInfo fileInfo = description->getFileInfo();
-    setFileInfo(fileInfo.getName(), fileInfo.getSize(), fileInfo.getDescription());
+	///hero
+    setFileInfo(fileInfo.getName(), fileInfo.getSize(), fileInfo.getDescription(), fileInfo.getMediaType());
     hashes = fileInfo.getHashes();
 
     waitOnHashTimer = timerFactory->createTimer(5000);
