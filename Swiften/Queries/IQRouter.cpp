@@ -38,7 +38,7 @@ void IQRouter::handleIQ(std::shared_ptr<IQ> iq) {
     std::vector<std::shared_ptr<IQHandler> >::const_reverse_iterator i = handlers_.rbegin();
     std::vector<std::shared_ptr<IQHandler> >::const_reverse_iterator rend = handlers_.rend();
     for (; i != rend; ++i) {
-
+/*
 		///hero catch iq error
 		try{
 			///hero
@@ -59,13 +59,14 @@ void IQRouter::handleIQ(std::shared_ptr<IQ> iq) {
 		if (handled) {
 			break;
 		}
+		*/
 
-/*
+
         handled |= (*i)->handleIQ(iq);
         if (handled) {
             break;
         }
-		*/
+		
     }
     if (!handled && (iq->getType() == IQ::Get || iq->getType() == IQ::Set) ) {
         sendIQ(IQ::createError(iq->getFrom(), iq->getID(), ErrorPayload::FeatureNotImplemented, ErrorPayload::Cancel));
