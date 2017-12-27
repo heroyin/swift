@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include <Swiften/Base/API.h>
 #include <Swiften/Elements/IQ.h>
@@ -86,6 +87,9 @@ namespace Swift {
             std::vector< std::shared_ptr<IQHandler> > handlers_;
             std::vector< std::shared_ptr<IQHandler> > queuedRemoves_;
             bool queueRemoves_;
+
+			///hero
+		    std::recursive_mutex  mMutex;
 
     };
 }

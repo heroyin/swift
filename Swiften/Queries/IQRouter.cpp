@@ -33,6 +33,9 @@ bool IQRouter::isAvailable() {
 void IQRouter::handleIQ(std::shared_ptr<IQ> iq) {
     queueRemoves_ = true;
 
+	///hero
+	std::lock_guard<std::recursive_mutex> lock(mMutex);
+
     bool handled = false;
     // Go through the handlers in reverse order, to give precedence to the last added handler
     std::vector<std::shared_ptr<IQHandler> >::const_reverse_iterator i = handlers_.rbegin();
@@ -87,6 +90,8 @@ void IQRouter::processPendingRemoves() {
 void IQRouter::addHandler(IQHandler* handler) {
 	//hero
 	assert(handler);
+	std::lock_guard<std::recursive_mutex> lock(mMutex);
+
     addHandler(std::shared_ptr<IQHandler>(handler, noop));
 }
 
@@ -97,6 +102,8 @@ void IQRouter::removeHandler(IQHandler* handler) {
 void IQRouter::addHandler(std::shared_ptr<IQHandler> handler) {
 	///hero
     assert(handler);
+	std::lock_guard<std::recursive_mutex> lock(mMutex);
+
     handlers_.push_back(handler);
 }
 
@@ -105,6 +112,7 @@ void IQRouter::removeHandler(std::shared_ptr<IQHandler> handler) {
         queuedRemoves_.push_back(handler);
     }
     else {
+		std::lock_guard<std::recursive_mutex> lock(mMutex);
         erase(handlers_, handler);
     }
 }
