@@ -18,6 +18,12 @@
 #include <Swiften/Parser/XMPPParserClient.h>
 #include <Swiften/StreamStack/HighLayer.h>
 
+///heroyin
+#include <thread>
+#include <condition_variable>
+#include <deque>
+#include <mutex>
+
 namespace Swift {
     class ProtocolHeader;
     class XMPPParser;
@@ -64,6 +70,9 @@ namespace Swift {
 
             void doResetParser();
 
+///heroyin
+			void doSendPacket();
+
         private:
             PayloadParserFactoryCollection* payloadParserFactories_;
             XMPPParser* xmppParser_;
@@ -73,5 +82,14 @@ namespace Swift {
             bool setExplictNSonTopLevelElements_;
             bool resetParserAfterParse_;
             bool inParser_;
+
+///heroyin
+			std::thread* thread_;
+			std::deque<SafeByteArray> queue;
+            std::mutex queueMutex;
+            std::condition_variable queueNonEmpty;
+			bool stopThread;
+
+
     };
 }

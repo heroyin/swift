@@ -23,14 +23,48 @@ XMPPLayer::XMPPLayer(
             xmlParserFactory_(xmlParserFactory),
             setExplictNSonTopLevelElements_(setExplictNSonTopLevelElements),
             resetParserAfterParse_(false),
+	        //heroyin
+            stopThread(false),
             inParser_(false) {
     xmppParser_ = new XMPPParser(this, payloadParserFactories_, xmlParserFactory);
     xmppSerializer_ = new XMPPSerializer(payloadSerializers_, streamType, setExplictNSonTopLevelElements);
+
+	///heroyin
+	thread_ = new std::thread(boost::bind(&XMPPLayer::doSendPacket, this));
 }
 
 XMPPLayer::~XMPPLayer() {
+	///heroyin
+	stopThread = true;
+	SafeByteArray array;
+	writeDataInternal(array);
+    
+    thread_->join();
+    delete thread_;
+	///heroyin end
+
     delete xmppSerializer_;
     delete xmppParser_;
+}
+
+///heroyin
+void XMPPLayer::doSendPacket() {
+    while (!stopThread) {
+        SafeByteArray data;
+        {
+            std::unique_lock<std::mutex> lock(queueMutex);
+            while (queue.empty()) {
+                queueNonEmpty.wait(lock);
+            }
+            data = queue.front();
+            queue.pop_front();
+        }
+       
+	   if(!stopThread){
+         onWriteData(data);
+		 writeDataToChildLayer(data);
+	   }
+    }
 }
 
 void XMPPLayer::writeHeader(const ProtocolHeader& header) {
@@ -50,8 +84,16 @@ void XMPPLayer::writeData(const std::string& data) {
 }
 
 void XMPPLayer::writeDataInternal(const SafeByteArray& data) {
-    onWriteData(data);
-    writeDataToChildLayer(data);
+	///heroyin
+
+	{
+        std::lock_guard<std::mutex> lock(queueMutex);
+        queue.push_back(data);
+    }
+    queueNonEmpty.notify_one();
+
+ //   onWriteData(data);
+ ///   writeDataToChildLayer(data);
 }
 
 void XMPPLayer::handleDataRead(const SafeByteArray& data) {
